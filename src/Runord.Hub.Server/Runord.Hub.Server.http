@@ -1,0 +1,11 @@
+@Runord.Hub.Server_HostAddress = http://localhost:5228
+
+GET {{Runord.Hub.Server_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Runord.Hub.Server_HostAddress}}/todos/1
+Accept: application/json
+
+###

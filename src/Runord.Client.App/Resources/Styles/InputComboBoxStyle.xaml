@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Цвета -->
+    <Color x:Key="CustomComboBoxBackgroundColor">#262626</Color>
+    <Color x:Key="CustomComboBoxBorderBrushColor">#303030</Color>
+    <Color x:Key="CustomComboBoxForegroundBrushColor">#FFFFFF</Color>
+    <Color x:Key="CustomComboBoxPlaceholderBrushColor">#808080</Color>
+    <Color x:Key="CustomComboBoxPopupBackgroundBrushColor">#262626</Color>
+    <Color x:Key="CustomComboBoxPopupBorderBrushColor">#303030</Color>
+    <Color x:Key="CustomComboBoxItemBackgroundBrushColor">#262626</Color>
+    <Color x:Key="CustomComboBoxItemHoverBrushColor">#333333</Color>
+
+    <!-- Кисти -->
+    <SolidColorBrush x:Key="CustomComboBoxBackgroundBrush" Color="{StaticResource CustomComboBoxBackgroundColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxBorderBrush" Color="{StaticResource CustomComboBoxBorderBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxForegroundBrush" Color="{StaticResource CustomComboBoxForegroundBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxPlaceholderBrush" Color="{StaticResource CustomComboBoxPlaceholderBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxPopupBackgroundBrush" Color="{StaticResource CustomComboBoxPopupBackgroundBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxPopupBorderBrush" Color="{StaticResource CustomComboBoxPopupBorderBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxItemBackgroundBrush" Color="{StaticResource CustomComboBoxItemBackgroundBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxItemForegroundBrush" Color="{StaticResource CustomComboBoxForegroundBrushColor}"/>
+    <SolidColorBrush x:Key="CustomComboBoxArrowBrush" Color="{StaticResource CustomComboBoxForegroundBrushColor}"/>
+
+    <!-- Стиль для Border -->
+    <Style x:Key="CustomComboBoxOuterBorderStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CustomComboBoxBorderBrush}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource CustomComboBoxBackgroundBrush}"/>
+    </Style>
+
+</ResourceDictionary>

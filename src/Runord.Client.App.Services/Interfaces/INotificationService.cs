@@ -1,0 +1,13 @@
+﻿using Runord.Client.App.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RunordClient.Application.Interfaces.Services
+{
+    public interface INotificationService : IService
+    {
+    }
+}

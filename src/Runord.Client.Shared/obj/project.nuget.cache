@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "+ykQFDRcx8c=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\FREDDBEAR_FAZBEARSON\\Desktop\\Практика\\Runord\\src\\Runord.Client.Shared\\Runord.Client.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\FREDDBEAR_FAZBEARSON\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}

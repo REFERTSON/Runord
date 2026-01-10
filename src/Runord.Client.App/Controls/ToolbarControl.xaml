@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Runord.Client.App.Controls.Toolbar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Runord.Client.App.Controls"
+             MinWidth="500"
+             Width="1114"
+             Height="60">
+
+    <Border Style="{StaticResource OuterBorderStyle}">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <!-- Поле поиска -->
+                <ColumnDefinition Width="Auto"/>
+                <!-- Фильтры -->
+                <ColumnDefinition Width="Auto"/>
+                <!-- пустое пространство -->
+                <ColumnDefinition Width="*"/>
+                <!-- Добавить -->
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <local:SearchBox Grid.Column="0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             Margin="12,0,0,0"/>
+
+            <local:IconActionButton Grid.Column="1"
+                                    Text="Фильтр"
+                                    FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                                    IconSource="pack://application:,,,/Resources/Images/Icons/Filter.png"
+                                    Width="150"
+                                    Height="40"
+                                    ContentHorizontalAlignment="Left"
+                                    Margin="10,0"/>
+
+            <local:IconActionButton Grid.Column="3"
+                                    Text="Добавить"
+                                    FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                                    IconSource="pack://application:,,,/Resources/Images/Icons/Add.png"
+                                    IconSize="10"
+                                    Width="140"
+                                    Height="40"
+                                    ContentHorizontalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Margin="12,0"/>
+        </Grid>
+    </Border>
+</UserControl>

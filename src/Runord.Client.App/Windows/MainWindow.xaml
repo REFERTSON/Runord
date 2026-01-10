@@ -1,0 +1,179 @@
+﻿<Window x:Class="Runord.Client.App.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Runord.Client.App.Windows" xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Runord" MinHeight="700" MinWidth="900" Width="1200" Height="800"
+        Icon="pack://application:,,,/Resources/Images/Icons/Logo.png">
+
+    <Grid Background="#1F1F1F">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" MaxWidth="280"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="Menu" Background="#1B1C1E">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel x:Name="Title" Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Resources/Images/Icons/Logo.png"
+                       Width="45"
+                       Height="45"
+                       SnapsToDevicePixels="True"
+                       UseLayoutRounding="True"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Margin="20,0,0,0"/>
+
+                <TextBlock Text="Runord"
+                           FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="30"
+                           Margin="15,5,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1">
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Dashboard.png"
+                        Content="Панель задач"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowDashboardCommand}"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/TaskBuilder.png"
+                        Content="Конструктор задач"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowTaskBuilderCommand}"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/TaskJournal.png"
+                        Content="Журнал задач"
+                        Margin="0,7" Cursor="Hand"
+                        Command="{Binding ShowTaskHistoryCommand}"/>
+
+                <Separator Width="230"
+                           Height="0.1"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/TasksDispatcher.png"
+                        Content="Диспетчер задач"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowHubDashboardCommand}"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Users.png"
+                        Content="Пользователи"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowUserManagementCommand}"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Nodes.png"
+                        Content="Узлы"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowNodeManagementCommand}"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Console.png"
+                        Content="Консоль"
+                        Margin="0,7,0,0" Cursor="Hand"
+                        Command="{Binding ShowConsoleCommand}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2">
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Notification.png"
+                        Content="Уведомления"
+                        Margin="0,7,0,0"/>
+
+                <Button Width="230"
+                        Height="35"
+                        Style="{StaticResource SideMenuButtonStyle}"
+                        FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                        Tag="pack://application:,,,/Resources/Images/Icons/Settings.png"
+                        Content="Настройки"
+                        Margin="0,7,0,0"
+                        Command="{Binding ShowSettingsCommand}"/>
+            </StackPanel>
+
+            <Border Style="{StaticResource OuterBorderStyle}" Grid.Row="3" Margin="10,5">
+                <Grid x:Name="UserProfile" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0"
+                           Source="pack://application:,,,/Resources/Images/Icons/UserAvatarDefault.png"
+                           Width="25"
+                           Height="25"
+                           SnapsToDevicePixels="True"
+                           UseLayoutRounding="True"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left">
+                        <TextBlock Text="Иванов Иван"
+                                   FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                                   Foreground="White"
+                                   FontSize="13"/>
+                        <TextBlock Text="Пользователь"
+                                   FontFamily="pack://application:,,,/Resources/Fonts/#Rubik Regular"
+                                   Foreground="#8B8B8B"
+                                   FontSize="10"/>
+                    </StackPanel>
+
+                    <Image Grid.Column="2"
+                           Source="pack://application:,,,/Resources/Images/Icons/Logout.png"
+                           Width="18"
+                           Height="15"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <controls:TransitioningContentControl 
+                        x:Name="View" 
+                        Grid.Column="1"
+                        Content="{Binding CurrentView}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="0"
+                        Transition="Left"/>
+    </Grid>
+</Window>

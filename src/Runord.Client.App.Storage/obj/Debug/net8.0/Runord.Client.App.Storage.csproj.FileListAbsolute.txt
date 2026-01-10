@@ -1,0 +1,15 @@
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\bin\Debug\net8.0\Runord.Client.App.Storage.deps.json
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\bin\Debug\net8.0\Runord.Client.App.Storage.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\bin\Debug\net8.0\Runord.Client.App.Storage.pdb
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\bin\Debug\net8.0\Runord.Client.Shared.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\bin\Debug\net8.0\Runord.Client.Shared.pdb
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.csproj.AssemblyReference.cache
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.AssemblyInfoInputs.cache
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.AssemblyInfo.cs
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.csproj.CoreCompileInputs.cache
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.C.18253E4D.Up2Date
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\refint\Runord.Client.App.Storage.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\Runord.Client.App.Storage.pdb
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Storage\obj\Debug\net8.0\ref\Runord.Client.App.Storage.dll

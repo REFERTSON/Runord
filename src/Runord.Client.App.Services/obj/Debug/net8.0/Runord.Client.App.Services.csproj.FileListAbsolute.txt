@@ -1,0 +1,11 @@
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\bin\Debug\net8.0\Runord.Client.App.Services.deps.json
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\bin\Debug\net8.0\Runord.Client.App.Services.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\bin\Debug\net8.0\Runord.Client.App.Services.pdb
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.AssemblyInfoInputs.cache
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.AssemblyInfo.cs
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.csproj.CoreCompileInputs.cache
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\refint\Runord.Client.App.Services.dll
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\Runord.Client.App.Services.pdb
+C:\Users\FREDDBEAR_FAZBEARSON\Desktop\Практика\Runord\src\Runord.Client.App.Services\obj\Debug\net8.0\ref\Runord.Client.App.Services.dll
