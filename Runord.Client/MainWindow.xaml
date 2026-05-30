@@ -1,0 +1,15 @@
+﻿<Window x:Class="Runord.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Runord Client" 
+        Background="#222222"
+        AllowsTransparency="False" 
+        ResizeMode="CanResize" 
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Assets/Icons/Icon.png">
+
+    <Grid>
+        <ContentControl x:Name="MainContentHolder"/>
+    </Grid>
+</Window>

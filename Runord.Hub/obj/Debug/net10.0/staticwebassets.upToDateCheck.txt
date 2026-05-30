@@ -1,0 +1,4 @@
+R:\Диплом\Runord\Runord.Hub\wwwroot\adminpanel\css\scalar-like.css
+R:\Диплом\Runord\Runord.Hub\wwwroot\adminpanel\js\admin.js
+wwwroot\adminpanel\css\scalar-like.css
+wwwroot\adminpanel\js\admin.js

@@ -1,0 +1,11 @@
+R:\Диплом\Runord\Runord.Shared\bin\Debug\net10.0\Runord.Shared.deps.json
+R:\Диплом\Runord\Runord.Shared\bin\Debug\net10.0\Runord.Shared.dll
+R:\Диплом\Runord\Runord.Shared\bin\Debug\net10.0\Runord.Shared.pdb
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.GeneratedMSBuildEditorConfig.editorconfig
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.AssemblyInfoInputs.cache
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.AssemblyInfo.cs
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.csproj.CoreCompileInputs.cache
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.dll
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\refint\Runord.Shared.dll
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\Runord.Shared.pdb
+R:\Диплом\Runord\Runord.Shared\obj\Debug\net10.0\ref\Runord.Shared.dll

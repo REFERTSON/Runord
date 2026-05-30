@@ -1,0 +1,97 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Runord.Client.UIElements/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Mvvm": "8.4.2",
+          "SharpVectors.Wpf": "1.8.5",
+          "gong-wpf-dragdrop": "4.0.0"
+        },
+        "runtime": {
+          "Runord.Client.UIElements.dll": {}
+        }
+      },
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Mvvm.dll": {
+            "assemblyVersion": "8.4.0.0",
+            "fileVersion": "8.4.2.1"
+          }
+        }
+      },
+      "gong-wpf-dragdrop/4.0.0": {
+        "runtime": {
+          "lib/net8.0-windows7.0/GongSolutions.WPF.DragDrop.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "SharpVectors.Wpf/1.8.5": {
+        "runtime": {
+          "lib/net9.0-windows7.0/SharpVectors.Converters.Wpf.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Core.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Css.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Dom.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Model.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Rendering.Wpf.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          },
+          "lib/net9.0-windows7.0/SharpVectors.Runtime.Wpf.dll": {
+            "assemblyVersion": "1.8.5.0",
+            "fileVersion": "1.8.5.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Runord.Client.UIElements/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CommunityToolkit.Mvvm/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WadCzGEc2U+3e20avRLng4qNtt4zoOGWrdUISqJWrHe3/FSnrYjuM5Sb4yQb09LhkBXrrI4Zt3dLKgRMbItsrg==",
+      "path": "communitytoolkit.mvvm/8.4.2",
+      "hashPath": "communitytoolkit.mvvm.8.4.2.nupkg.sha512"
+    },
+    "gong-wpf-dragdrop/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nDj86v1XHhgmQR8PPo/uDDp/xdLDxcqZdvIwSxWAHQPiRX/GBXK13FYY0C2xQow9RSl6j5FKLk8xoYrdb52vqg==",
+      "path": "gong-wpf-dragdrop/4.0.0",
+      "hashPath": "gong-wpf-dragdrop.4.0.0.nupkg.sha512"
+    },
+    "SharpVectors.Wpf/1.8.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WURdBDq5AE8RjKV9pFS7lNkJe81gxja9SaMGE4URq9GJUZ6M+5DGUL0Lm3B0iYW2/Meyowaz4ffGsyW+RBSTtg==",
+      "path": "sharpvectors.wpf/1.8.5",
+      "hashPath": "sharpvectors.wpf.1.8.5.nupkg.sha512"
+    }
+  }
+}
