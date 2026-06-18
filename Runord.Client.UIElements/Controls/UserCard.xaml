@@ -1,0 +1,139 @@
+﻿<UserControl x:Class="Runord.Client.UIElements.Controls.UserCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Runord.Client.UIElements.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="130" d:DesignWidth="307"
+             x:Name="userCardRoot">
+
+    <Border Background="#212121" CornerRadius="3">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Левый цветной маркер статуса -->
+            <Border Grid.Column="0" 
+                    CornerRadius="0,3,3,0" 
+                    Width="5"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0,16">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#FF5555"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsOnline, ElementName=userCardRoot}" Value="True">
+                                <Setter Property="Background" Value="#55FF6E"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+
+            <!-- Центральная часть: Идентична NodeCard -->
+            <Grid Grid.Column="1" Margin="14,16,10,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Имя пользователя -->
+                <TextBlock Grid.Row="0" 
+                           Text="{Binding UserName, ElementName=userCardRoot}"
+                           Foreground="White"
+                           FontSize="14"
+                           FontWeight="Medium"
+                           FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="0,0,0,4"/>
+
+                <!-- Роль и Статус (по аналогии с IP и Статусом ноды) -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock Text="{Binding UserRole, ElementName=userCardRoot}"
+                               Foreground="#888888"
+                               FontSize="11"
+                               FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                    <TextBlock Text=" - " Foreground="#888888" FontSize="11"
+                               FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                    <TextBlock Text="{Binding StatusText, ElementName=userCardRoot}" 
+                               FontSize="11"
+                               FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#FF5555"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOnline, ElementName=userCardRoot}" Value="True">
+                                        <Setter Property="Foreground" Value="#55FF6E"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Нижний блок: Контакты и активность (по аналогии с CPU/RAM) -->
+                <StackPanel Grid.Row="3" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                        <TextBlock Text="Email: " Foreground="#CCCCCC" FontSize="12"
+                                   FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                        <TextBlock Text="{Binding Email, ElementName=userCardRoot}" 
+                                   Foreground="White" FontSize="12" FontWeight="Medium"
+                                   FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Был(а): " Foreground="#CCCCCC" FontSize="12"
+                                   FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                        <TextBlock Text="{Binding LastActivity, ElementName=userCardRoot}" 
+                                   Foreground="White" FontSize="12" FontWeight="Medium"
+                                   FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <!-- Правая часть: Кнопки управления с правильными иконками -->
+            <StackPanel Grid.Column="2" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Top" 
+                        Margin="0,16,16,0">
+
+                <local:PrimaryButton Width="26" Height="26"
+                                     ButtonCornerRadius="3"
+                                     Margin="0,0,10,0"
+                                     ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                     ButtonIconWidth="10" ButtonIconHeight="10" ButtonForeground="#AAAAAA"
+                                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Edit.svg"
+                                     ButtonCommand="{Binding EditCommand, ElementName=userCardRoot}"
+                                     ButtonCommandParameter="{Binding EditCommandParameter, ElementName=userCardRoot}"/>
+
+                <local:PrimaryButton Width="26" Height="26"
+                     ButtonCornerRadius="3"
+                     ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                     ButtonIconWidth="10" ButtonIconHeight="10" ButtonForeground="#AAAAAA"
+                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg"
+                     ButtonCommand="{Binding DeleteCommand, ElementName=userCardRoot}"
+                     ButtonCommandParameter="{Binding DeleteCommandParameter, ElementName=userCardRoot}">
+
+                    <local:PrimaryButton.Style>
+                        <Style TargetType="{x:Type local:PrimaryButton}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UserRole, ElementName=userCardRoot}" Value="Super Admin">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </local:PrimaryButton.Style>
+                </local:PrimaryButton>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

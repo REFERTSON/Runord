@@ -2,8 +2,16 @@
 
 namespace Runord.Shared.DTOs.Auth
 {
+    // DTO запроса на аутентификацию, содержащий email и пароль
     public record LoginRequest(string Email, string Password);
 
+    // DTO запроса на выход из системы, содержащий идентификатор пользователя и refresh token для его инвалидирования
+    public record LogoutRequest(Guid UserId, string RefreshToken);
+
+    // DTO для запроса обновления токена, содержащий текущий refresh token
+    public record RefreshTokenRequest(string RefreshToken);
+
+    // DTO ответа при успешной аутентификации, содержащий токены и информацию о пользователе
     public record TokenResponse(
         string AccessToken,
         DateTime AccessTokenExpiresAt,
@@ -11,11 +19,4 @@ namespace Runord.Shared.DTOs.Auth
         DateTime RefreshTokenExpiresAt,
         UserDto User
     );
-
-    public record RefreshTokenRequest(string RefreshToken);
-    public record LogoutRequest(Guid UserId, string RefreshToken);
-    public record ForgotPasswordRequest(string Email);
-    public record ResetPasswordRequest(string Email, string Token, string NewPassword);
-    public record ConfirmEmailRequest(string Email, string ConfirmationToken);
-    public record ResendConfirmationRequest(string Email);
 }

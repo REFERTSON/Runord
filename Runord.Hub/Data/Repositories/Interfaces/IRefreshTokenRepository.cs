@@ -6,6 +6,11 @@ namespace Runord.Hub.Data.Repositories.Interfaces
     public interface IRefreshTokenRepository : IBaseRepository<RefreshTokenEntity>
     {
         Task<RefreshTokenEntity?> GetByTokenAsync(string token, CancellationToken ct = default);
-        Task RevokeAllForUserAsync(Guid userId, CancellationToken ct = default);
+
+        // Удаляет все токены пользователя при выходе
+        Task DeleteAllForUserAsync(Guid userId, CancellationToken ct = default);
+
+        // Метод для фонового смотрителя
+        Task DeleteExpiredAndRevokedTokensAsync(CancellationToken ct = default);
     }
 }

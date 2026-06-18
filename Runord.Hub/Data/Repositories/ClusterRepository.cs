@@ -7,9 +7,7 @@ namespace Runord.Hub.Data.Repositories
 {
     public class ClusterRepository : BaseRepository<ClusterEntity>, IClusterRepository
     {
-        public ClusterRepository(AppDbContext context) : base(context)
-        {
-        }
+        public ClusterRepository(AppDbContext context) : base(context) { }
 
         public async Task<ClusterEntity?> GetByIpAddressAsync(string ipAddress, CancellationToken cancellationToken = default)
         {
@@ -18,8 +16,6 @@ namespace Runord.Hub.Data.Repositories
         }
 
         public async Task<IEnumerable<ClusterEntity>> GetClustersByStatusAsync(ClusterStatus status, CancellationToken cancellationToken = default)
-        {
-            return await _dbSet.Where(c => c.Status == status).ToListAsync(cancellationToken);
-        }
+            => await _dbSet.Where(c => c.Status == status).ToListAsync(cancellationToken);
     }
 }

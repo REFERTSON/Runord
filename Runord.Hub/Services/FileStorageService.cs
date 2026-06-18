@@ -2,8 +2,9 @@
 using Minio;
 using Minio.DataModel.Args;
 using Runord.Hub.Configs;
+using Runord.Hub.Services.Interfaces;
 using Runord.Shared.Base;
-using Runord.Shared.Interfaces.Services;
+using Runord.Shared.DTOs.Task;
 
 namespace Runord.Hub.Services
 {
@@ -18,63 +19,17 @@ namespace Runord.Hub.Services
             _settings = settings.Value;
         }
 
-        public async Task<Result<string>> UploadFileAsync(string bucketName, string objectName, Stream fileStream, string contentType, CancellationToken cancellationToken = default)
+        public Task<Response<string>> GetDownloadUrlAsync(string bucketName, string objectName, TimeSpan expiry, CancellationToken ct = default)
         {
-            try
-            {
-                var bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName), cancellationToken);
-                if (!bucketExists)
-                    await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName), cancellationToken);
-
-                var args = new PutObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName)
-                    .WithStreamData(fileStream)
-                    .WithObjectSize(fileStream.Length)
-                    .WithContentType(contentType);
-                await _minioClient.PutObjectAsync(args, cancellationToken);
-                return Result<string>.Success(objectName);
-            }
-            catch (Exception ex)
-            {
-                return Result<string>.Failure($"Ошибка загрузки: {ex.Message}");
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<Result<Stream>> DownloadFileAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
+        public Task<Response<FileMetadata>> GetFileMetadataAsync(string bucketName, string objectName, CancellationToken ct = default)
         {
-            try
-            {
-                var memoryStream = new MemoryStream();
-                var args = new GetObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName)
-                    .WithCallbackStream(stream => stream.CopyTo(memoryStream));
-                await _minioClient.GetObjectAsync(args, cancellationToken);
-                memoryStream.Position = 0;
-                return Result<Stream>.Success(memoryStream);
-            }
-            catch (Exception ex)
-            {
-                return Result<Stream>.Failure($"Ошибка скачивания: {ex.Message}");
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<Result<bool>> DeleteFileAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var args = new RemoveObjectArgs().WithBucket(bucketName).WithObject(objectName);
-                await _minioClient.RemoveObjectAsync(args, cancellationToken);
-                return Result<bool>.Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Result<bool>.Failure($"Ошибка удаления: {ex.Message}");
-            }
-        }
-
-        public async Task<Result<string>> GetFileUrlAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
+        public async Task<Response<string>> GetFileUrlAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -83,11 +38,30 @@ namespace Runord.Hub.Services
                     .WithObject(objectName)
                     .WithExpiry(3600);
                 var url = await _minioClient.PresignedGetObjectAsync(args);
-                return Result<string>.Success(url);
+                return Response<string>.Success(url);
             }
             catch (Exception ex)
             {
-                return Result<string>.Failure($"Ошибка получения ссылки: {ex.Message}");
+                return Response<string>.Failure($"Ошибка получения ссылки: {ex.Message}");
+            }
+        }
+
+        public Task<Response<string>> GetUploadUrlAsync(string bucketName, string objectName, TimeSpan expiry, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Response<bool>> DeleteFileAsync(string bucketName, string objectName, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var args = new RemoveObjectArgs().WithBucket(bucketName).WithObject(objectName);
+                await _minioClient.RemoveObjectAsync(args, cancellationToken);
+                return Response<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Response<bool>.Failure($"Ошибка удаления: {ex.Message}");
             }
         }
     }

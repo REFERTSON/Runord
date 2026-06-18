@@ -4,9 +4,130 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Runord.Client.Views.Pages"
+             xmlns:uiElements="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="768" d:DesignWidth="1120"
+             x:Name="pageRoot">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
+
+    <Grid Background="#191919">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+            <TextBlock Text="Проекты"
+                       FontSize="28.5"
+                       FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans"
+                       FontWeight="Regular"
+                       Foreground="#FFFFFF"
+                       Margin="54,36,0,0" Grid.Row="0"/>
+
+            <Border Grid.Row="1" Margin="56,17,52,15" Height="55" BorderBrush="#3A3A3A" BorderThickness="1" Background="#212121">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <uiElements:PrimaryButton Grid.Column="0"
+                                              ButtonText="Фильтр"
+                                              Width="100" Height="35"
+                                              ButtonCornerRadius="3"
+                                              ButtonBackground="#FF2C2C2C"
+                                              ButtonForeground="White"
+                                              ButtonHoverBackground="#FF444444"
+                                              ButtonPressedBackground="#FF111111"
+                                              ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                                              ButtonFontSize="12"
+                                              ButtonFontWeight="Medium"
+                                              ButtonIconWidth="14" ButtonIconHeight="14"
+                                              ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Filter.svg"
+                                              Margin="12,0"/>
+
+                    <uiElements:PrimaryButton Grid.Column="1"
+                                              ButtonText="Создать проект"
+                                              Width="143" Height="35"
+                                              ButtonCornerRadius="3"
+                                              ButtonBackground="#FFFF4D4D"
+                                              ButtonForeground="White"
+                                              ButtonHoverBackground="#FFFF6666"
+                                              ButtonPressedBackground="#FFCC3333"
+                                              ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                                              ButtonFontSize="12"
+                                              ButtonFontWeight="Medium"
+                                              ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Add.svg"
+                                              ButtonIconWidth="10" ButtonIconHeight="10"
+                                              Margin="0,0,14,0"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Margin="50,10,20,20" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsListEmpty}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+
+            <ListBox ItemsSource="{Binding ProjectsList}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <uiElements:ProjectCard Width="307" Height="130" Margin="12"
+                                                ProjectName="{Binding Name}"
+                                                ProjectDescription="{Binding Description}"
+                                                EditCommand="{Binding DataContext.EditProjectCommand, ElementName=pageRoot}"
+                                                EditCommandParameter="{Binding}"
+                                                DeleteCommand="{Binding DataContext.DeleteProjectCommand, ElementName=pageRoot}"
+                                                DeleteCommandParameter="{Binding}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+
+        <uiElements:NotFoundBanner Grid.Row="2"
+                                   MaxWidth="550"
+                                   Margin="54,10,54,40"
+                                   Header="{Binding BannerHeader, FallbackValue='Загрузка...'}"
+                                   Message="{Binding BannerMessage, FallbackValue='Пожалуйста, подождите.'}"
+                                   Visibility="{Binding IsListEmpty, Converter={StaticResource BoolToVisibility}}"/>
     </Grid>
 </UserControl>

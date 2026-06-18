@@ -33,16 +33,14 @@ namespace Runord.Hub.Services
             _configuration = configuration;
         }
 
-        public async Task<Result<TokenResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
+        public async Task<Response<TokenResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
         {
             var user = await _userRepository.GetByEmailAsync(email, ct);
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                return Result<TokenResponse>.Failure("Неверный email или пароль");
+                return Response<TokenResponse>.Failure("Неверный email или пароль");
 
-            if (!user.EmailConfirmed)
-                return Result<TokenResponse>.Failure("Email не подтверждён. Проверьте почту.");
             if (user.IsBlocked)
-                return Result<TokenResponse>.Failure("Учётная запись заблокирована.");
+                return Response<TokenResponse>.Failure("Учётная запись заблокирована.");
 
             var accessToken = GenerateJwtToken(user);
             var refreshToken = await GenerateAndSaveRefreshTokenAsync(user.Id, ct);
@@ -52,33 +50,35 @@ namespace Runord.Hub.Services
             _userRepository.Update(user);
             await _unitOfWork.SaveChangesAsync(ct);
 
-            return Result<TokenResponse>.Success(CreateTokenResponse(user, accessToken, refreshToken));
+            return Response<TokenResponse>.Success(CreateTokenResponse(user, accessToken, refreshToken));
         }
 
-        public async Task<Result<bool>> LogoutAsync(Guid userId, CancellationToken ct = default)
+        public async Task<Response<bool>> LogoutAsync(Guid userId, CancellationToken ct = default)
         {
             var user = await _userRepository.GetByIdAsync(userId, ct);
             if (user == null)
-                return Result<bool>.Failure("Пользователь не найден");
+                return Response<bool>.Failure("Пользователь не найден");
 
             user.IsOnline = false;
             _userRepository.Update(user);
-            await _refreshTokenRepository.RevokeAllForUserAsync(userId, ct);
+
+            await _refreshTokenRepository.DeleteAllForUserAsync(userId, ct);
+
             await _unitOfWork.SaveChangesAsync(ct);
-            return Result<bool>.Success(true);
+            return Response<bool>.Success(true);
         }
 
-        public async Task<Result<TokenResponse>> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
+        public async Task<Response<TokenResponse>> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
         {
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken, ct);
             if (storedToken == null || storedToken.RevokedAt != null)
-                return Result<TokenResponse>.Failure("Недействительный refresh token");
+                return Response<TokenResponse>.Failure("Недействительный refresh token");
             if (storedToken.ExpiresAt < DateTimeOffset.UtcNow)
-                return Result<TokenResponse>.Failure("Refresh token истёк");
+                return Response<TokenResponse>.Failure("Refresh token истёк");
 
             var user = await _userRepository.GetByIdAsync(storedToken.UserId, ct);
             if (user == null)
-                return Result<TokenResponse>.Failure("Пользователь не найден");
+                return Response<TokenResponse>.Failure("Пользователь не найден");
 
             storedToken.RevokedAt = DateTimeOffset.UtcNow;
             _refreshTokenRepository.Update(storedToken);
@@ -87,80 +87,7 @@ namespace Runord.Hub.Services
             var newAccessToken = GenerateJwtToken(user);
             await _unitOfWork.SaveChangesAsync(ct);
 
-            return Result<TokenResponse>.Success(CreateTokenResponse(user, newAccessToken, newRefreshToken));
-        }
-
-        public async Task<Result<bool>> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword, CancellationToken ct = default)
-        {
-            var user = await _userRepository.GetByIdAsync(userId, ct);
-            if (user == null)
-                return Result<bool>.Failure("Пользователь не найден");
-            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
-                return Result<bool>.Failure("Неверный старый пароль");
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            user.LastModified = DateTimeOffset.UtcNow;
-            _userRepository.Update(user);
-            await _refreshTokenRepository.RevokeAllForUserAsync(userId, ct);
-            await _unitOfWork.SaveChangesAsync(ct);
-            return Result<bool>.Success(true);
-        }
-
-        public async Task<Result<bool>> ForgotPasswordAsync(string email, CancellationToken ct = default)
-        {
-            var user = await _userRepository.GetByEmailAsync(email, ct);
-            if (user == null)
-                return Result<bool>.Success(true); // не раскрываем существование
-
-            user.PasswordResetToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-            user.PasswordResetTokenExpiresAt = DateTimeOffset.UtcNow.AddHours(1);
-            _userRepository.Update(user);
-            await _unitOfWork.SaveChangesAsync(ct);
-            // TODO: отправить email
-            return Result<bool>.Success(true);
-        }
-
-        public async Task<Result<bool>> ResetPasswordAsync(string email, string token, string newPassword, CancellationToken ct = default)
-        {
-            var user = await _userRepository.GetByEmailAsync(email, ct);
-            if (user == null || user.PasswordResetToken != token || user.PasswordResetTokenExpiresAt < DateTimeOffset.UtcNow)
-                return Result<bool>.Failure("Недействительная или истёкшая ссылка сброса пароля");
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            user.PasswordResetToken = null;
-            user.PasswordResetTokenExpiresAt = null;
-            _userRepository.Update(user);
-            await _refreshTokenRepository.RevokeAllForUserAsync(user.Id, ct);
-            await _unitOfWork.SaveChangesAsync(ct);
-            return Result<bool>.Success(true);
-        }
-
-        public async Task<Result<bool>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default)
-        {
-            var user = await _userRepository.GetByEmailAsync(email, ct);
-            if (user == null || user.EmailConfirmationToken != token || user.EmailConfirmationTokenExpiresAt < DateTimeOffset.UtcNow)
-                return Result<bool>.Failure("Недействительная или истёкшая ссылка подтверждения");
-
-            user.EmailConfirmed = true;
-            user.EmailConfirmationToken = null;
-            user.EmailConfirmationTokenExpiresAt = null;
-            _userRepository.Update(user);
-            await _unitOfWork.SaveChangesAsync(ct);
-            return Result<bool>.Success(true);
-        }
-
-        public async Task<Result<bool>> ResendConfirmationEmailAsync(string email, CancellationToken ct = default)
-        {
-            var user = await _userRepository.GetByEmailAsync(email, ct);
-            if (user == null || user.EmailConfirmed)
-                return Result<bool>.Success(true);
-
-            user.EmailConfirmationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-            user.EmailConfirmationTokenExpiresAt = DateTimeOffset.UtcNow.AddDays(1);
-            _userRepository.Update(user);
-            await _unitOfWork.SaveChangesAsync(ct);
-            // TODO: отправить email
-            return Result<bool>.Success(true);
+            return Response<TokenResponse>.Success(CreateTokenResponse(user, newAccessToken, newRefreshToken));
         }
 
         private string GenerateJwtToken(UserEntity user)
@@ -203,7 +130,7 @@ namespace Runord.Hub.Services
         {
             var userDto = new UserDto(
                 user.Id, user.Email, user.FullName, "",
-                user.Group, user.Role, user.LastLoginTime, user.CreatedAt);
+                user.Role, user.LastLoginTime, user.CreatedAt);
             return new TokenResponse(
                 AccessToken: accessToken,
                 AccessTokenExpiresAt: DateTime.UtcNow.AddHours(1),

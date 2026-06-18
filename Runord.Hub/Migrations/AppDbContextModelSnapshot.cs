@@ -17,7 +17,7 @@ namespace Runord.Hub.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.4")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -28,7 +28,7 @@ namespace Runord.Hub.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<double>("CpuTotal")
+                    b.Property<double>("CpuTotalPercent")
                         .HasColumnType("double precision");
 
                     b.Property<double>("CpuUsagePercent")
@@ -50,12 +50,6 @@ namespace Runord.Hub.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<double>("NetworkInMbps")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("NetworkOutMbps")
-                        .HasColumnType("double precision");
-
                     b.Property<double>("RamTotalGb")
                         .HasColumnType("double precision");
 
@@ -64,12 +58,6 @@ namespace Runord.Hub.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<double>("StorageTotalGb")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("StorageUsageGb")
-                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
@@ -137,6 +125,9 @@ namespace Runord.Hub.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<int>("TaskCount")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
@@ -158,10 +149,6 @@ namespace Runord.Hub.Migrations
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ReplacedByTokenId")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.Property<DateTimeOffset?>("RevokedAt")
                         .HasColumnType("timestamp with time zone");
@@ -204,6 +191,10 @@ namespace Runord.Hub.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ParametersJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
 
@@ -229,15 +220,11 @@ namespace Runord.Hub.Migrations
                     b.ToTable("Tasks", (string)null);
                 });
 
-            modelBuilder.Entity("Runord.Shared.Entities.TaskFile", b =>
+            modelBuilder.Entity("Runord.Shared.Entities.TaskFileEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("BucketName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -258,10 +245,6 @@ namespace Runord.Hub.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
 
-                    b.Property<string>("ObjectName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<long>("SizeBytes")
                         .HasColumnType("bigint");
 
@@ -281,9 +264,8 @@ namespace Runord.Hub.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("BlockReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -293,27 +275,10 @@ namespace Runord.Hub.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("EmailConfirmationToken")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<DateTimeOffset?>("EmailConfirmationTokenExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Group")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("IsBlocked")
                         .ValueGeneratedOnAdd()
@@ -334,13 +299,6 @@ namespace Runord.Hub.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("PasswordResetToken")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<DateTimeOffset?>("PasswordResetTokenExpiresAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
@@ -404,7 +362,7 @@ namespace Runord.Hub.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Runord.Shared.Entities.TaskFile", b =>
+            modelBuilder.Entity("Runord.Shared.Entities.TaskFileEntity", b =>
                 {
                     b.HasOne("Runord.Shared.Entities.TaskEntity", "Task")
                         .WithMany("Files")

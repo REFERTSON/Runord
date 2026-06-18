@@ -29,9 +29,6 @@
     <Compile Update="Views\Pages\TaskDispatherView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Pages\TerminalView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\Pages\UserManagementView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,4 +1,5 @@
-﻿using Runord.Hub.Services;
+﻿using Runord.Hub.BackgroundServices;
+using Runord.Hub.Services;
 using Runord.Hub.Services.Interfaces;
 using Runord.Shared.Interfaces;
 using Runord.Shared.Interfaces.Services;
@@ -15,8 +16,6 @@ namespace Runord.Hub.Extensions
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<IUserService, UserService>();
-
-            services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
 

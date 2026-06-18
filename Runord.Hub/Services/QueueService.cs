@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Runord.Hub.Configs;
 using Runord.Hub.Services.Interfaces;
-using Runord.Shared.DTOs.Task;
+using Runord.Shared.Entities;
 using System.Text;
 using System.Text.Json;
 

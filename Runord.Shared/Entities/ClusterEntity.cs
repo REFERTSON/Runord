@@ -7,16 +7,14 @@ namespace Runord.Shared.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string IpAddress { get; set; } = string.Empty;
-        public ClusterStatus Status { get; set; }
-        public double CpuTotal { get; set; }
-        public double RamTotalGb { get; set; }
-        public double StorageTotalGb { get; set; }
+        public ClusterStatus Status { get; set; } = ClusterStatus.Offline;
 
-        // Метрики кластера (текущее состояние)
-        public double CpuUsagePercent { get; set; }
-        public double RamUsageGb { get; set; }
-        public double StorageUsageGb { get; set; }
-        public double NetworkInMbps { get; set; }
-        public double NetworkOutMbps { get; set; }
+        // Общая мощность (максимальные значения)
+        public double CpuTotalPercent { get; set; } = 0.0;
+        public double RamTotalGb { get; set; } = 0.0;
+
+        // Текущие метрики использования
+        public double CpuUsagePercent { get; set; } = 0.0;
+        public double RamUsageGb { get; set; } = 0.0;
     }
 }

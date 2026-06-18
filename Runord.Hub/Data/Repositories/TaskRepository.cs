@@ -6,9 +6,7 @@ namespace Runord.Hub.Data.Repositories
 {
     public class TaskRepository : BaseRepository<TaskEntity>, ITaskRepository
     {
-        public TaskRepository(AppDbContext context) : base(context)
-        {
-        }
+        public TaskRepository(AppDbContext context) : base(context) { }
 
         public async Task<TaskEntity?> GetTaskWithDetailsAsync(Guid id, CancellationToken cancellationToken = default)
         {
@@ -19,8 +17,8 @@ namespace Runord.Hub.Data.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         }
 
-        public async Task<(IEnumerable<TaskEntity> Items, int TotalCount)> GetFilteredTasksAsync(
-            Guid? userId, bool isAdmin, Guid? projectId, int page, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TaskEntity>> GetFilteredTasksAsync(
+            Guid? userId, bool isAdmin, Guid? projectId, CancellationToken cancellationToken = default)
         {
             var query = _dbSet.AsNoTracking();
 
@@ -30,15 +28,9 @@ namespace Runord.Hub.Data.Repositories
             if (projectId.HasValue)
                 query = query.Where(t => t.ProjectId == projectId.Value);
 
-            var totalCount = await query.CountAsync(cancellationToken);
-
-            var items = await query
+            return await query
                 .OrderByDescending(t => t.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .ToListAsync(cancellationToken);
-
-            return (items, totalCount);
         }
     }
 }

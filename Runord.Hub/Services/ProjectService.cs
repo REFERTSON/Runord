@@ -1,8 +1,11 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.SignalR;
 using Runord.Hub.Data.Repositories.Interfaces;
+using Runord.Hub.Hubs;
 using Runord.Shared.Base;
 using Runord.Shared.DTOs.Project;
 using Runord.Shared.Entities;
+using Runord.Shared.Filters;
 using Runord.Shared.Interfaces;
 
 namespace Runord.Hub.Services
@@ -11,43 +14,64 @@ namespace Runord.Hub.Services
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHubContext<ProjectHub> _projectHubContext;
 
-        public ProjectService(IProjectRepository projectRepository, IUnitOfWork unitOfWork)
+        public ProjectService(
+            IProjectRepository projectRepository,
+            IUnitOfWork unitOfWork,
+            IHubContext<ProjectHub> projectHubContext)
         {
             _projectRepository = projectRepository;
             _unitOfWork = unitOfWork;
+            _projectHubContext = projectHubContext;
         }
 
-        public async Task<Result<PagedResponse<ProjectDto>>> GetProjectsAsync(Guid userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
+        private async Task NotifyProjectChangedAsync(string action, ProjectEntity project, CancellationToken ct)
         {
-            var all = await _projectRepository.GetProjectsByUserIdAsync(userId, cancellationToken);
-            if (!isAdmin)
-                all = all.Where(p => p.CreatedById == userId);
-            var totalCount = all.Count();
-            var paged = all.Skip((page - 1) * pageSize).Take(pageSize);
-            var dtos = paged.Adapt<List<ProjectDto>>();
-            var response = new PagedResponse<ProjectDto>
-            {
-                Items = dtos,
-                TotalCount = totalCount,
-                PageNumber = page,
-                PageSize = pageSize
-            };
-            return Result<PagedResponse<ProjectDto>>.Success(response);
-        }
-
-        public async Task<Result<ProjectDto>> GetProjectByIdAsync(Guid id, Guid userId, bool isAdmin, CancellationToken cancellationToken = default)
-        {
-            var project = await _projectRepository.GetProjectWithDetailsAsync(id, cancellationToken);
-            if (project == null)
-                return Result<ProjectDto>.Failure("Проект не найден");
-            if (!isAdmin && project.CreatedById != userId)
-                return Result<ProjectDto>.Failure("Нет прав");
             var dto = project.Adapt<ProjectDto>();
-            return Result<ProjectDto>.Success(dto);
+            // Уведомляем всех, кто подписан на этот проект (владельца, участников)
+            await _projectHubContext.Clients.Group($"project_{project.Id}")
+                .SendAsync("ProjectChanged", action, dto, ct);
         }
 
-        public async Task<Result<ProjectDto>> CreateProjectAsync(CreateProjectRequest request, Guid userId, CancellationToken cancellationToken = default)
+        public async Task<Response<IEnumerable<ProjectDto>>> GetProjectsAsync(
+            Guid userId,
+            ProjectFilter? filter = null,
+            CancellationToken ct = default)
+        {
+            var projects = await _projectRepository.GetProjectsByUserIdAsync(userId, ct);
+            // Применяем фильтр
+            if (filter != null)
+            {
+                if (!string.IsNullOrWhiteSpace(filter.SearchText))
+                    projects = projects.Where(p => p.Name.Contains(filter.SearchText) ||
+                                                   (p.Description?.Contains(filter.SearchText) ?? false));
+                if (filter.FromDate.HasValue)
+                    projects = projects.Where(p => p.CreatedAt >= filter.FromDate.Value);
+                if (filter.ToDate.HasValue)
+                    projects = projects.Where(p => p.CreatedAt <= filter.ToDate.Value);
+            }
+            var dtos = projects.Adapt<List<ProjectDto>>();
+            return Response<IEnumerable<ProjectDto>>.Success(dtos);
+        }
+
+        public async Task<Response<ProjectDto>> GetProjectByIdAsync(
+            Guid id,
+            Guid userId,
+            CancellationToken ct = default)
+        {
+            var project = await _projectRepository.GetProjectWithDetailsAsync(id, ct);
+            if (project == null)
+                return Response<ProjectDto>.Failure("Проект не найден");
+            if (project.CreatedById != userId)
+                return Response<ProjectDto>.Failure("Нет доступа к этому проекту");
+            return Response<ProjectDto>.Success(project.Adapt<ProjectDto>());
+        }
+
+        public async Task<Response<ProjectDto>> CreateProjectAsync(
+            CreateProjectRequest request,
+            Guid userId,
+            CancellationToken ct = default)
         {
             var entity = new ProjectEntity
             {
@@ -55,39 +79,63 @@ namespace Runord.Hub.Services
                 Name = request.Name,
                 Description = request.Description,
                 CreatedById = userId,
-                CreatedAt = DateTimeOffset.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow,
+                LastModified = DateTimeOffset.UtcNow
             };
-            await _projectRepository.AddAsync(entity, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return Result<ProjectDto>.Success(entity.Adapt<ProjectDto>());
+            await _projectRepository.AddAsync(entity, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            await NotifyProjectChangedAsync("Create", entity, ct);
+
+            return Response<ProjectDto>.Success(entity.Adapt<ProjectDto>());
         }
 
-        public async Task<Result<ProjectDto>> UpdateProjectAsync(Guid id, UpdateProjectRequest request, Guid userId, bool isAdmin, CancellationToken cancellationToken = default)
+        public async Task<Response<ProjectDto>> UpdateProjectAsync(
+            Guid id,
+            UpdateProjectRequest request,
+            Guid userId,
+            bool isAdmin,
+            CancellationToken ct = default)
         {
-            var project = await _projectRepository.GetByIdAsync(id, cancellationToken);
+            var project = await _projectRepository.GetByIdAsync(id, ct);
             if (project == null)
-                return Result<ProjectDto>.Failure("Проект не найден");
+                return Response<ProjectDto>.Failure("Проект не найден");
             if (!isAdmin && project.CreatedById != userId)
-                return Result<ProjectDto>.Failure("Нет прав");
+                return Response<ProjectDto>.Failure("Нет прав на редактирование");
 
             project.Name = request.Name;
             project.Description = request.Description;
             project.LastModified = DateTimeOffset.UtcNow;
             _projectRepository.Update(project);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return Result<ProjectDto>.Success(project.Adapt<ProjectDto>());
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            await NotifyProjectChangedAsync("Update", project, ct);
+
+            return Response<ProjectDto>.Success(project.Adapt<ProjectDto>());
         }
 
-        public async Task<Result<bool>> DeleteProjectAsync(Guid id, Guid userId, bool isAdmin, CancellationToken cancellationToken = default)
+        public async Task<Response<bool>> DeleteProjectAsync(
+            Guid id,
+            Guid userId,
+            bool isAdmin,
+            CancellationToken ct = default)
         {
-            var project = await _projectRepository.GetByIdAsync(id, cancellationToken);
+            var project = await _projectRepository.GetByIdAsync(id, ct);
             if (project == null)
-                return Result<bool>.Failure("Проект не найден");
+                return Response<bool>.Failure("Проект не найден");
             if (!isAdmin && project.CreatedById != userId)
-                return Result<bool>.Failure("Нет прав");
+                return Response<bool>.Failure("Нет прав на удаление");
+
+            // Сохраняем DTO для уведомления перед удалением
+            var dto = project.Adapt<ProjectDto>();
+
             _projectRepository.Delete(project);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            await _projectHubContext.Clients.Group($"project_{id}")
+                .SendAsync("ProjectChanged", "Delete", dto, ct);
+
+            return Response<bool>.Success(true);
         }
     }
 }

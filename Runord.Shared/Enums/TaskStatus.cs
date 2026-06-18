@@ -1,27 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Runord.Shared.Enums
+﻿namespace Runord.Shared.Enums
 {
+    // Перечисление для статуса задачи
     public enum TaskStatus
     {
-        /// <summary>Задача создана, но еще не отправлена в очередь.</summary>
-        Created = 0,
-
-        /// <summary>Задача в очереди RabbitMQ, ожидает отправки в кластер.</summary>
-        Queued = 1,
-
-        /// <summary>Задача отправлена в Cluster.Server, запущена MPI-сессия.</summary>
-        Processing = 2,
-
-        /// <summary>Задача успешно выполнена, результат сохранен в MinIO.</summary>
-        Completed = 3,
-
-        /// <summary>Задача прервана из-за ошибки (код возврата MPI ≠ 0).</summary>
-        Failed = 4,
-
-        /// <summary>Задача отменена пользователем через UI.</summary>
-        Cancelled = 5
+        Created,    // Задача создана, но еще не поставлена в очередь
+        Queued,     // Задача поставлена в очередь и ожидает выполнения
+        Processing, // Задача в процессе выполнения
+        Completed,  // Задача успешно завершена
+        Failed,     // Задача завершилась с ошибкой
+        Cancelled   // Задача была отменена пользователем или системой
     }
 }

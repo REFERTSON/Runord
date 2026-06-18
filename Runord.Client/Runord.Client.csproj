@@ -9,11 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Icons\Add.svg" />
+    <None Remove="Assets\Icons\Filter.svg" />
     <None Remove="Assets\Icons\Icon.png" />
-    <None Remove="Assets\Icons\Logo.svg" />
+    <None Remove="Assets\Icons\SadSmile.svg" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\IBMPlexSans.ttf" />
+    <Resource Include="Assets\Fonts\RobotoFlex.ttf" />
+    <Resource Include="Assets\Icons\Add.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Check.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Filter.svg" />
     <Resource Include="Assets\Icons\Icon.png" />
     <Resource Include="Assets\Icons\Logo.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -21,11 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Fonts\" />
     <Folder Include="Assets\Styles\" />
-    <Folder Include="Models\" />
     <Folder Include="Services\" />
-    <Folder Include="Converts\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +59,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Runord.Client.UIElements\Runord.Client.UIElements.csproj" />
-    <ProjectReference Include="..\Runord.Shared\Runord.Shared.csproj" />
   </ItemGroup>
 
 </Project>

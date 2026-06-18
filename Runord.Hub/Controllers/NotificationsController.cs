@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Runord.Shared.Base;
 using Runord.Shared.DTOs.Notification;
+using Runord.Shared.Filters;
 using Runord.Shared.Interfaces;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace Runord.Hub.Controllers
@@ -10,58 +12,48 @@ namespace Runord.Hub.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+    [Description("Управление уведомлениями текущего пользователя.")]
     public class NotificationsController : ControllerBase
     {
         private readonly INotificationService _notificationService;
         public NotificationsController(INotificationService notificationService)
             => _notificationService = notificationService;
 
-        // 1. GET: получение с фильтрацией и пагинацией
         [HttpGet]
-        public async Task<ActionResult<Result<PagedResponse<NotificationDto>>>> GetNotifications(
-            [FromQuery] NotificationFilter filter,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 20)
+        [EndpointSummary("Получить список уведомлений")]
+        [EndpointDescription("Возвращает уведомления текущего пользователя с возможностью фильтрации.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<IEnumerable<NotificationDto>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<IEnumerable<NotificationDto>>>> GetNotifications(
+            [FromQuery] NotificationFilter? filter)
         {
             var userId = GetUserId();
             if (!userId.HasValue) return Unauthorized("Неверный идентификатор пользователя");
-            var result = await _notificationService.GetUserNotificationsAsync(userId.Value, filter ?? new NotificationFilter(), page, pageSize);
+            var result = await _notificationService.GetNotificationsAsync(userId.Value, filter);
             return Ok(result);
         }
 
-        // 2. POST: создание личного уведомления
-        [HttpPost]
-        public async Task<ActionResult<Result<Guid>>> CreateNotification([FromBody] CreateNotificationRequest request)
-        {
-            var userId = GetUserId();
-            if (!userId.HasValue) return Unauthorized();
-            var result = await _notificationService.CreateNotificationAsync(userId.Value, request);
-            return Ok(result);
-        }
-
-        // 3. POST: массовая рассылка (только администратор)
-        [HttpPost("broadcast")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Result<int>>> BroadcastNotifications([FromBody] BroadcastNotificationRequest request)
-        {
-            var result = await _notificationService.BroadcastNotificationAsync(request.UserIds, request.Notification);
-            return Ok(result);
-        }
-
-        // 4. PATCH: отметить одно как прочитанное
         [HttpPatch("{id:guid}/read")]
-        public async Task<ActionResult<Result<bool>>> MarkAsRead(Guid id)
+        [EndpointSummary("Отметить уведомление как прочитанное")]
+        [EndpointDescription("Помечает одно уведомление прочитанным.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<bool>>> MarkAsRead(Guid id)
         {
             var userId = GetUserId();
             if (!userId.HasValue) return Unauthorized();
-            var result = await _notificationService.MarkAsReadAsync(id, userId.Value);
+            var result = await _notificationService.MarkAsReadAsync(userId.Value, id);
             if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
 
-        // 5. PATCH: отметить все как прочитанные
         [HttpPatch("read-all")]
-        public async Task<ActionResult<Result<int>>> MarkAllAsRead()
+        [EndpointSummary("Отметить все уведомления как прочитанные")]
+        [EndpointDescription("Помечает все уведомления пользователя прочитанными.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<int>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<int>>> MarkAllAsRead()
         {
             var userId = GetUserId();
             if (!userId.HasValue) return Unauthorized();
@@ -69,20 +61,27 @@ namespace Runord.Hub.Controllers
             return Ok(result);
         }
 
-        // 6. DELETE: удалить одно уведомление
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult<Result<bool>>> DeleteNotification(Guid id)
+        [EndpointSummary("Удалить одно уведомление")]
+        [EndpointDescription("Удаляет указанное уведомление пользователя.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<bool>>> DeleteNotification(Guid id)
         {
             var userId = GetUserId();
             if (!userId.HasValue) return Unauthorized();
-            var result = await _notificationService.DeleteNotificationAsync(id, userId.Value);
+            var result = await _notificationService.DeleteNotificationAsync(userId.Value, id);
             if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
 
-        // 7. DELETE: удалить все уведомления пользователя
         [HttpDelete("all")]
-        public async Task<ActionResult<Result<int>>> DeleteAllNotifications()
+        [EndpointSummary("Удалить все уведомления")]
+        [EndpointDescription("Удаляет все уведомления текущего пользователя.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<int>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<int>>> DeleteAllNotifications()
         {
             var userId = GetUserId();
             if (!userId.HasValue) return Unauthorized();
@@ -95,11 +94,5 @@ namespace Runord.Hub.Controllers
             var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Guid.TryParse(claim, out var id) ? id : null;
         }
-    }
-
-    public class BroadcastNotificationRequest
-    {
-        public List<Guid> UserIds { get; set; } = new();
-        public CreateNotificationRequest Notification { get; set; } = null!;
     }
 }

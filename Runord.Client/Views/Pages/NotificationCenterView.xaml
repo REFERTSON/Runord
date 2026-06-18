@@ -4,9 +4,170 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Runord.Client.Views.Pages"
+             xmlns:uiElements="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
+             xmlns:converters="clr-namespace:Runord.Client.UIElements.Converters;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="768" d:DesignWidth="1120"
+             x:Name="pageRoot">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+    </UserControl.Resources>
+
+    <Grid Background="#191919">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Уведомления"
+                   FontSize="28.5"
+                   FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans"
+                   FontWeight="Regular"
+                   Foreground="#FFFFFF"
+                   Margin="54,36,0,0"/>
+
+        <Border Grid.Row="1" Margin="56,17,52,15" Height="55" BorderBrush="#3A3A3A" BorderThickness="1" Background="#212121">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <uiElements:PrimaryButton Grid.Column="0" ButtonText="Фильтр"
+                                              Width="100" Height="35" ButtonCornerRadius="3" Margin="12,0"
+                                              ButtonBackground="#FF2C2C2C" ButtonForeground="White"
+                                              ButtonHoverBackground="#FF444444" ButtonPressedBackground="#FF111111"
+                                              ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                                              ButtonFontSize="12"
+                                              ButtonFontWeight="Medium"
+                                              ButtonIconWidth="14" ButtonIconHeight="14"
+                                              ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Filter.svg"/>
+
+                    <uiElements:PrimaryButton Grid.Column="1" ButtonText="Отметить все"
+                                              Width="110" Height="35" ButtonCornerRadius="3" Margin="0,0,12,0"
+                                              ButtonBackground="#FFFF4D4D" ButtonForeground="White"
+                                              ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333"
+                                              ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                                              ButtonFontSize="12"
+                                              ButtonFontWeight="Medium"/>
+
+                    <uiElements:PrimaryButton Grid.Column="2" ButtonText="Очистить все"
+                                              Width="130" Height="35" ButtonCornerRadius="3" Margin="0,0,14,0"
+                                              ButtonBackground="#FFFF4D4D" ButtonForeground="White"
+                                              ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333"
+                                              ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex"
+                                              ButtonFontSize="12"
+                                              ButtonFontWeight="Medium"
+                                              ButtonIconWidth="12" ButtonIconHeight="12"
+                                              ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg"
+                                              ButtonCommand="{Binding ClearAllCommand}"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <uiElements:NotFoundBanner Grid.Row="2" MaxWidth="550" Margin="54,10,54,40"
+                                   Header="{Binding BannerHeader}"
+                                   Message="{Binding BannerMessage}"
+                                   Visibility="{Binding IsListEmpty, Converter={StaticResource BoolToVisibility}}"/>
+
+        <ScrollViewer Grid.Row="2" Margin="54,0,52,40" VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding IsListEmpty, Converter={StaticResource InverseBoolToVisibility}}">
+            <ItemsControl ItemsSource="{Binding GroupedNotifications}">
+
+                <ItemsControl.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Foreground="#AAAAAA" FontSize="15" FontWeight="Medium" Margin="0,15,0,10"/>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ItemsControl.GroupStyle>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#212121" CornerRadius="3" Margin="0,0,20,10" MinHeight="70">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border x:Name="TypeMarker" Grid.Column="0" Background="#55AAFF"
+                                        CornerRadius="0,3,3,0" Width="5" Height="30" 
+                                        HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,16"/>
+
+                                <Path x:Name="TypeIcon" Grid.Column="1" Width="18" Height="18" Margin="16,17,12,0" 
+                                      VerticalAlignment="Top" Stretch="Uniform" Fill="White"/>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,16,16,16">
+                                    <TextBlock x:Name="TitleText" Text="{Binding Title}" Foreground="#E0E0E0" FontSize="14" FontWeight="Medium" Margin="0,0,0,6"/>
+                                    <TextBlock Text="{Binding Message}" Foreground="#888888" FontSize="12" TextWrapping="Wrap" LineHeight="16"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+
+                                    <Path x:Name="ReadCheckIcon" Visibility="Collapsed" Width="18" Height="18" Margin="0,0,14,0"
+                                          VerticalAlignment="Center" Stretch="Uniform" Fill="#55FF6E"
+                                          Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
+
+                                    <uiElements:PrimaryButton x:Name="BtnRead" Width="28" Height="28" ButtonCornerRadius="3" Margin="0,0,10,0"
+                                                              ButtonBackground="#333333" ButtonHoverBackground="#404040" ButtonPressedBackground="#222222"
+                                                              ButtonIconWidth="12" ButtonIconHeight="12" ButtonForeground="#AAAAAA"
+                                                              ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Check.svg"
+                                                              ButtonCommand="{Binding DataContext.MarkAsReadCommand, ElementName=pageRoot}"
+                                                              ButtonCommandParameter="{Binding}"/>
+
+                                    <uiElements:PrimaryButton Width="28" Height="28" ButtonCornerRadius="3"
+                                                              ButtonBackground="#333333" ButtonHoverBackground="#404040" ButtonPressedBackground="#222222"
+                                                              ButtonIconWidth="12" ButtonIconHeight="12" ButtonForeground="#AAAAAA"
+                                                              ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg"
+                                                              ButtonCommand="{Binding DataContext.DeleteNotificationCommand, ElementName=pageRoot}"
+                                                              ButtonCommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsRead}" Value="True">
+                                <Setter TargetName="BtnRead" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="ReadCheckIcon" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="TitleText" Property="Foreground" Value="#AAAAAA"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Type}" Value="Error">
+                                <Setter TargetName="TypeMarker" Property="Background" Value="#FF4D4D"/>
+                                <Setter TargetName="TypeIcon" Property="Data" Value="M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41L8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59Z"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="Warning">
+                                <Setter TargetName="TypeMarker" Property="Background" Value="#FFCC00"/>
+                                <Setter TargetName="TypeIcon" Property="Data" Value="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="Success">
+                                <Setter TargetName="TypeMarker" Property="Background" Value="#55FF6E"/>
+                                <Setter TargetName="TypeIcon" Property="Data" Value="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="Info">
+                                <Setter TargetName="TypeMarker" Property="Background" Value="#55AAFF"/>
+                                <Setter TargetName="TypeIcon" Property="Data" Value="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

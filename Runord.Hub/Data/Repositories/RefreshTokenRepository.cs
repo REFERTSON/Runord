@@ -11,9 +11,14 @@ namespace Runord.Hub.Data.Repositories
         public async Task<RefreshTokenEntity?> GetByTokenAsync(string token, CancellationToken ct = default)
             => await _dbSet.FirstOrDefaultAsync(rt => rt.Token == token, ct);
 
-        public async Task RevokeAllForUserAsync(Guid userId, CancellationToken ct = default)
+        public async Task DeleteAllForUserAsync(Guid userId, CancellationToken ct = default)
             => await _dbSet
-                .Where(rt => rt.UserId == userId && rt.RevokedAt == null)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(rt => rt.RevokedAt, DateTimeOffset.UtcNow), ct);
+                .Where(rt => rt.UserId == userId)
+                .ExecuteDeleteAsync(ct);
+
+        public async Task DeleteExpiredAndRevokedTokensAsync(CancellationToken ct = default)
+            => await _dbSet
+                .Where(rt => rt.ExpiresAt < DateTimeOffset.UtcNow || rt.RevokedAt != null)
+                .ExecuteDeleteAsync(ct);
     }
 }

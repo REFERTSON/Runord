@@ -8,7 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Fonts\" />
+    <None Remove="Assets\Fonts\Inter.ttf" />
+    <None Remove="Assets\Icons\Avatar.png" />
+    <None Remove="Assets\Icons\Builder.svg" />
+    <None Remove="Assets\Icons\Clusters.svg" />
+    <None Remove="Assets\Icons\Dashboard.svg" />
+    <None Remove="Assets\Icons\Edit.svg" />
+    <None Remove="Assets\Icons\Monitor.svg" />
+    <None Remove="Assets\Icons\More.svg" />
+    <None Remove="Assets\Icons\Notifications.svg" />
+    <None Remove="Assets\Icons\Projects.svg" />
+    <None Remove="Assets\Icons\Settings.svg" />
+    <None Remove="Assets\Icons\Trash.svg" />
+    <None Remove="Assets\Icons\Users.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,9 +35,60 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Runord.Shared\Runord.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\Inter.ttf" />
+    <Resource Include="Assets\Fonts\Roboto Flex.ttf" />
+    <Resource Include="Assets\Icons\Avatar.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Builder.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Check.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Clusters.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Dashboard.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Edit.svg" />
     <Resource Include="Assets\Icons\Logo.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Icons\Monitor.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\More.svg" />
+    <Resource Include="Assets\Icons\Notifications.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Projects.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\SadSmile.svg" />
+    <Resource Include="Assets\Icons\Settings.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Trash.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icons\Users.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\UserCard.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\ProjectCard.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

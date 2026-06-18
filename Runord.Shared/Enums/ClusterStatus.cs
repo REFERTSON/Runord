@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Runord.Shared.Enums
+﻿namespace Runord.Shared.Enums
 {
+    // Перечисление для статуса кластера в системе.
     public enum ClusterStatus
     {
-        /// <summary>Кластер в сети и доступен для работы</summary>
-        Online = 0,
-
-        /// <summary>Кластер не отвечает (heartbeat отсутствует).</summary>
-        Offline = 1,
+        Online,  // Кластер в сети и работает
+        Offline, // Кластер не в сети или не работает
     }
 }

@@ -3,9 +3,9 @@ using Runord.Shared.Interfaces;
 
 namespace Runord.Hub.Data.Repositories.Interfaces
 {
-    public interface ITaskFileRepository : IBaseRepository<TaskFile>
+    public interface ITaskFileRepository : IBaseRepository<TaskFileEntity>
     {
-        Task<IEnumerable<TaskFile>> GetFilesByTaskIdAsync(Guid taskId, bool? isResult = null, CancellationToken cancellationToken = default);
-        Task<TaskFile?> GetByMd5HashAsync(string md5Hash, CancellationToken cancellationToken = default);
+        Task<IEnumerable<TaskFileEntity>> GetFilesByTaskIdAsync(Guid taskId, bool? isResult = null, CancellationToken cancellationToken = default);
+        Task<TaskFileEntity?> GetByMd5HashAsync(string md5Hash, CancellationToken cancellationToken = default);
     }
 }

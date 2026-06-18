@@ -3,16 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Runord.Client.Views.Windows"
              xmlns:ui="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid Background="#191919">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ui:SidebarMenu Grid.Column="0"/>
+        <ui:SidebarMenu x:Name="Sidebar" Grid.Column="0"/>
+
+        <ContentControl x:Name="MainContent" Grid.Column="1" />
     </Grid>
 </UserControl>

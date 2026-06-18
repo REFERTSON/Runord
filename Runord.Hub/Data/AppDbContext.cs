@@ -11,7 +11,7 @@ namespace Runord.Hub.Data
         public DbSet<UserEntity> Users => Set<UserEntity>();
         public DbSet<ProjectEntity> Projects => Set<ProjectEntity>();
         public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
-        public DbSet<TaskFile> TaskFiles => Set<TaskFile>();
+        public DbSet<TaskFileEntity> TaskFiles => Set<TaskFileEntity>();
         public DbSet<ClusterEntity> Clusters => Set<ClusterEntity>();
         public DbSet<NotificationEntity> Notifications => Set<NotificationEntity>();
         public DbSet<RefreshTokenEntity> RefreshTokens => Set<RefreshTokenEntity>();
@@ -29,13 +29,8 @@ namespace Runord.Hub.Data
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.PasswordHash).IsRequired();
                 entity.Property(e => e.FullName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Group).HasMaxLength(50);
                 entity.Property(e => e.Role).HasConversion<int>();
-                entity.Property(e => e.EmailConfirmationToken).HasMaxLength(256);
-                entity.Property(e => e.PasswordResetToken).HasMaxLength(256);
-                entity.Property(e => e.BlockReason).HasMaxLength(500);
                 entity.Property(e => e.IsOnline).HasDefaultValue(false);
-                entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
                 entity.Property(e => e.IsBlocked).HasDefaultValue(false);
             });
 
@@ -71,7 +66,7 @@ namespace Runord.Hub.Data
             });
 
             // 4. Конфигурация TaskFile
-            modelBuilder.Entity<TaskFile>(entity =>
+            modelBuilder.Entity<TaskFileEntity>(entity =>
             {
                 entity.ToTable("TaskFiles");
                 entity.HasKey(e => e.Id);
@@ -115,7 +110,6 @@ namespace Runord.Hub.Data
                 entity.HasIndex(e => e.Token).IsUnique();
                 entity.Property(e => e.Token).IsRequired().HasMaxLength(256);
                 entity.Property(e => e.ExpiresAt).IsRequired();
-                entity.Property(e => e.ReplacedByTokenId).HasMaxLength(256);
 
                 entity.HasOne(rt => rt.User)
                       .WithMany(u => u.RefreshTokens)

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Runord.Shared.Enums
+﻿namespace Runord.Shared.Enums
 {
+    // Перечисление для приоритета задач
     public enum TaskPriority
     {
-        /// <summary>Низкий приоритет – выполняется в фоне, после других задач.</summary>
-        Low = 0,
-
-        /// <summary>Средний приоритет – стандартный уровень.</summary>
-        Medium = 1,
-
-        /// <summary>Высокий приоритет – задачи ставятся в начало очереди.</summary>
-        High = 2,
+        Low,    // Низкий приоритет
+        Medium, // Средний приоритет
+        High,   // Высокий приоритет
     }
 }

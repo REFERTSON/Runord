@@ -16,6 +16,11 @@ namespace Runord.Hub.Data.Repositories
             _dbSet = context.Set<T>();
         }
 
+        public virtual IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbSet.FindAsync(new object[] { id }, cancellationToken);

@@ -3,6 +3,7 @@ using Runord.Shared.Enums;
 
 namespace Runord.Shared.DTOs.Task
 {
+    // DTO для передачи информации о задаче.
     public record TaskDto(
         Guid Id,
         Guid ProjectId,
@@ -12,9 +13,11 @@ namespace Runord.Shared.DTOs.Task
         Enums.TaskStatus Status,
         TaskPriority Priority,
         int ProgressPercent,
-        DateTimeOffset CreatedAt
+        DateTimeOffset CreatedAt,
+        List<TaskFileDto> Files
     ) : BaseDto(Id);
 
+    // DTO для метрик задачи (плоская структура, без вложенного Task)
     public record TaskMetricsDto(
         Guid TaskId,
         string TargetClusterNode,
@@ -25,19 +28,11 @@ namespace Runord.Shared.DTOs.Task
         int ProcessCount,
         double IoDurationSeconds,
         double AccelerationEfficiency,
-        List<TaskFileDto> Files,
         DateTimeOffset CreatedAt,
         DateTimeOffset LastModified
     );
 
-    public record TaskFileDto(
-        Guid Id, 
-        string Name, 
-        long SizeBytes, 
-        string Md5Hash, 
-        bool IsResult
-    ) : BaseDto(Id);
-
+    // DTO для создания задачи.
     public record CreateTaskRequest(
         Guid ProjectId,
         string Name,
@@ -45,6 +40,6 @@ namespace Runord.Shared.DTOs.Task
         TaskPriority Priority,
         List<string> InputFiles
     );
+
     public record UpdateTaskStatusRequest(Enums.TaskStatus Status);
-    public record DeleteTaskRequest(Guid Id);
 }

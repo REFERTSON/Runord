@@ -1,46 +1,34 @@
 ﻿using Runord.Shared.Base;
 using Runord.Shared.DTOs.Notification;
+using Runord.Shared.Filters;
 
 namespace Runord.Shared.Interfaces
 {
     public interface INotificationService
     {
-        // Чтение
-        Task<Result<PagedResponse<NotificationDto>>> GetUserNotificationsAsync(
+        // Метод для получения уведомлений пользователя с поддержкой фильтрации
+        Task<Response<IEnumerable<NotificationDto>>> GetNotificationsAsync(
             Guid userId,
-            NotificationFilter filter,
-            int page,
-            int pageSize,
+            NotificationFilter? filter = null,
             CancellationToken cancellationToken = default);
 
-        // Создание (одиночное и массовое)
-        Task<Result<Guid>> CreateNotificationAsync(
+        // Методы для управления статусом уведомлений (отметить как прочитанное - одиночное и массовое)
+        Task<Response<bool>> MarkAsReadAsync(
             Guid userId,
-            CreateNotificationRequest request,
-            CancellationToken cancellationToken = default);
-
-        Task<Result<int>> BroadcastNotificationAsync(
-            IEnumerable<Guid> userIds,
-            CreateNotificationRequest request,
-            CancellationToken cancellationToken = default);
-
-        // Обновление (одиночное и массовое)
-        Task<Result<bool>> MarkAsReadAsync(
             Guid notificationId,
+            CancellationToken cancellationToken = default);
+
+        Task<Response<int>> MarkAllAsReadAsync(
             Guid userId,
             CancellationToken cancellationToken = default);
 
-        Task<Result<int>> MarkAllAsReadAsync(
+        // Методы для удаления уведомлений (одиночное и массовое)
+        Task<Response<bool>> DeleteNotificationAsync(
             Guid userId,
-            CancellationToken cancellationToken = default);
-
-        // Удаление (одиночное и массовое)
-        Task<Result<bool>> DeleteNotificationAsync(
             Guid notificationId,
-            Guid userId,
             CancellationToken cancellationToken = default);
 
-        Task<Result<int>> DeleteAllUserNotificationsAsync(
+        Task<Response<int>> DeleteAllUserNotificationsAsync(
             Guid userId,
             CancellationToken cancellationToken = default);
     }

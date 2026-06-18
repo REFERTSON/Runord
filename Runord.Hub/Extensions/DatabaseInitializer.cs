@@ -16,22 +16,20 @@ namespace Runord.Hub.Extensions
             await context.Database.MigrateAsync();
 
             // Проверка и создание дефолтного админа
-            if (!context.Users.Any(u => u.Role == UserRole.Administrator))
+            if (!context.Users.Any(u => u.Role == UserRole.Admin))
             {
                 var admin = new UserEntity
                 {
                     Id = Guid.NewGuid(),
                     Email = "admin@runord.com",
                     FullName = "System Administrator",
-                    Group = "Admins",
-                    Role = UserRole.Administrator,
-                    EmailConfirmed = true,
+                    Role = UserRole.Admin,
                     IsBlocked = false,
                     CreatedAt = DateTimeOffset.UtcNow,
                     LastModified = DateTimeOffset.UtcNow
                 };
 
-                admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
+                admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword("123");
 
                 await context.Users.AddAsync(admin);
                 await context.SaveChangesAsync();

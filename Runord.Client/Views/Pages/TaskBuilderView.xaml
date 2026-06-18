@@ -4,9 +4,310 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Runord.Client.Views.Pages"
+             xmlns:uiElements="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="1000" d:DesignWidth="1200"
+             Background="#191919">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#212121"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#2D2D2D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="#FFFF4D4D"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" 
+                                          HorizontalScrollBarVisibility="Hidden" 
+                                          VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#444444"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FFFF4D4D"/>
+                                <Setter Property="Background" Value="#1F1F1F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#212121"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#2D2D2D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,4,32,4"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" 
+                                          Focusable="false"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"
+                                          ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="32"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path x:Name="Arrow" Grid.Column="1" Fill="#666666" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#444444"/>
+                                                <Setter TargetName="Arrow" Property="Fill" Value="#FFFFFF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#FFFF4D4D"/>
+                                                <Setter TargetName="Arrow" Property="Fill" Value="#FFFF4D4D"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="300">
+                                    <Border x:Name="DropDownBorder" Background="#1F1F1F" BorderThickness="1" BorderBrush="#2D2D2D" CornerRadius="4" Margin="0,4,0,4">
+                                        <ScrollViewer Margin="4,6" SnapsToDevicePixels="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" CornerRadius="3" Margin="2,1">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#2D2D2D"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#FFFF4D4D"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="FormLabelStyle">
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="54,36,54,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,10,0,20">
+                <TextBlock FontSize="13" FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans" Margin="0,0,0,8">
+                    <Run Text="Конструктор" Foreground="#666666"/>
+                    <Run Text="  /  " Foreground="#444444"/>
+                    <Run Text="{Binding SelectedType, FallbackValue='Новая задача'}" Foreground="#888888"/>
+                </TextBlock>
+                <TextBlock Text="Конструктор задач" FontSize="32" FontWeight="Regular" FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans" Foreground="#FFFFFF"/>
+                <TextBlock Text="Здесь вы можете создать или загрузить готовую задачу из шаблона." FontSize="13" Foreground="#A8A8A8" Margin="0,6,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <uiElements:PrimaryButton Width="40" Height="40" Margin="0,0,10,0" ButtonCornerRadius="3" ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A" ButtonIconWidth="14" ButtonIconHeight="14" ButtonForeground="#AAAAAA" ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg" ButtonCommand="{Binding CancelCommand}"/>
+                <uiElements:PrimaryButton Width="40" Height="40" Margin="0,0,10,0" ButtonCornerRadius="3" ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A" ButtonIconWidth="14" ButtonIconHeight="14" ButtonForeground="#AAAAAA" ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg" ButtonCommand="{Binding ClearAllCommand}"/>
+                <uiElements:PrimaryButton Width="40" Height="40" Margin="0,0,10,0" ButtonCornerRadius="3" ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A" ButtonIconWidth="14" ButtonIconHeight="14" ButtonForeground="#AAAAAA" ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg" ButtonCommand="{Binding LoadTemplateCommand}"/>
+                <uiElements:PrimaryButton Width="40" Height="40" Margin="0,0,10,0" ButtonCornerRadius="3" ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A" ButtonIconWidth="14" ButtonIconHeight="14" ButtonForeground="#AAAAAA" ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg" ButtonCommand="{Binding SaveCommand}"/>
+                <uiElements:PrimaryButton Width="40" Height="40" ButtonCornerRadius="3" ButtonBackground="#FFFF4D4D" ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333" ButtonIconWidth="14" ButtonIconHeight="14" ButtonForeground="#FFFFFF" ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg" ButtonCommand="{Binding LaunchTaskCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Separator Grid.Row="0" Background="#2D2D2D" Height="1" VerticalAlignment="Bottom" Margin="54,0"/>
+
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="54,24">
+
+                <Grid Margin="0,0,0,32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="ОСНОВНЫЕ ПАРАМЕТРЫ" Foreground="#888888" FontSize="12" FontWeight="Bold" Margin="0,0,0,16"/>
+
+                        <TextBlock Text="ПРОЕКТ" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, FallbackValue='По умолчанию'}"/>
+
+                        <TextBlock Text="НАЗВАНИЕ ЗАДАЧИ" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding TaskName, UpdateSourceTrigger=PropertyChanged, FallbackValue='Новая автоматизация'}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="ТИП ЗАДАЧИ" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox ItemsSource="{Binding TaskTypes}" SelectedItem="{Binding SelectedType}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="ПРИОРИТЕТ" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox ItemsSource="{Binding Priorities}" SelectedItem="{Binding SelectedPriority}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="ОПИСАНИЕ ЗАДАЧИ" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding TaskDescription, UpdateSourceTrigger=PropertyChanged}" Height="74" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"/>
+
+                        <TextBlock Text="ВЫБОР ВЫЧИСЛИТЕЛЬНОГО КЛАСТЕРА" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Основной сегмент (Cluster-Alpha)"/>
+                            <ComboBoxItem Content="Резервный сегмент (Cluster-Beta)"/>
+                            <ComboBoxItem Content="Локальная нода тестирования"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="АРГУМЕНТЫ И ВХОДНЫЕ ДАННЫЕ ЗАДАЧИ" Foreground="#888888" FontSize="12" FontWeight="Bold" Margin="0,0,0,16"/>
+
+                        <ItemsControl ItemsSource="{Binding Parameters}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" VerticalAlignment="Top"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#212121" BorderBrush="#2D2D2D" BorderThickness="1" CornerRadius="4" Margin="0,0,16,16" MinHeight="140" VerticalAlignment="Top">
+                                        <Grid>
+                                            <Border Width="3" Height="36" CornerRadius="0,2,2,0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,14,0,0" Background="#FFB300"/>
+
+                                            <Grid Margin="24,14,14,14">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Grid Grid.Row="0" Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Title}" Foreground="#FFFFFF" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                    <Border Grid.Column="1" CornerRadius="3" Padding="8,2" Background="#2D2D2D" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding ParameterType, FallbackValue='String'}" Foreground="#AAAAAA" FontSize="10" FontWeight="Bold"/>
+                                                    </Border>
+                                                </Grid>
+
+                                                <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Foreground="#777777" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,16"/>
+
+                                                <Grid Grid.Row="2" VerticalAlignment="Bottom">
+
+                                                    <TextBox x:Name="StringInput" 
+                                                             Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                                                             Margin="0" VerticalContentAlignment="Center" Visibility="Visible" TextWrapping="Wrap"/>
+
+                                                    <TextBox x:Name="NumberInput" 
+                                                             Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                                                             Margin="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Visibility="Collapsed"/>
+
+                                                    <Grid x:Name="FileInputGrid" Visibility="Collapsed">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <TextBox Grid.Column="0" Text="{Binding Value}" IsReadOnly="True" 
+                                                                 Margin="0,0,8,0" Background="#161616" BorderBrush="#262626" 
+                                                                 Foreground="#888888" VerticalContentAlignment="Center"/>
+
+                                                        <uiElements:PrimaryButton Grid.Column="1" ButtonText="Обзор" 
+                                                                                  Width="80" Height="30" ButtonCornerRadius="2" 
+                                                                                  ButtonFontSize="12"
+                                                                                  ButtonBackground="#2C2C2C" ButtonHoverBackground="#3D3D3D" 
+                                                                                  ButtonPressedBackground="#111111" ButtonForeground="#FFFFFF"/>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding ParameterType}" Value="Number">
+                                            <Setter TargetName="StringInput" Property="Visibility" Value="Collapsed"/>
+                                            <Setter TargetName="NumberInput" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ParameterType}" Value="File">
+                                            <Setter TargetName="StringInput" Property="Visibility" Value="Collapsed"/>
+                                            <Setter TargetName="FileInputGrid" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

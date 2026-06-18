@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Runord.Hub.Services.Interfaces;
-using Runord.Shared.DTOs.Task;
-using Runord.Shared.Interfaces;
+using Runord.Shared.Entities;
 
 namespace Runord.Hub.BackgroundServices
 {
@@ -23,6 +22,7 @@ namespace Runord.Hub.BackgroundServices
             using var scope = _serviceProvider.CreateScope();
             var queueService = scope.ServiceProvider.GetRequiredService<IQueueService>();
             var clusterSelector = scope.ServiceProvider.GetRequiredService<IClusterSelector>();
+            // var clusterExecutor = scope.ServiceProvider.GetRequiredService<IClusterExecutor>(); // gRPC клиент для вызова кластера
 
             queueService.SubscribeTaskQueue(async (message, cancellationToken) =>
             {
@@ -30,38 +30,34 @@ namespace Runord.Hub.BackgroundServices
                 {
                     _logger.LogInformation("Получена задача {TaskId} типа {TaskType}", message.TaskId, message.TaskType);
 
-                    // Выбираем кластер (например, всегда 1 CPU и 1 GB RAM для простоты)
-                    var requiredCpu = 1.0;
-                    var requiredRam = 1.0;
-                    var selectedCluster = await clusterSelector.SelectClusterAsync(message.TaskType, requiredCpu, requiredRam, cancellationToken);
+                    // Определение требований к ресурсам (заглушка)
+                    double requiredCpu = 1.0;
+                    double requiredRam = 1.0;
 
+                    var selectedCluster = await clusterSelector.SelectClusterAsync(message.TaskType, requiredCpu, requiredRam, cancellationToken);
                     if (selectedCluster == null)
                     {
-                        _logger.LogWarning("Нет доступных кластеров для задачи {TaskId}. Задача остаётся в очереди.", message.TaskId);
-                        return; // Не подтверждаем (reject) – RabbitMQ переотправит позже
+                        _logger.LogWarning("Нет доступных кластеров для задачи {TaskId}. Повторная попытка позже.", message.TaskId);
+                        throw new Exception("No cluster available"); // Сообщение не будет подтверждено – вернётся в очередь
                     }
 
-                    _logger.LogInformation("Задача {TaskId} направлена на кластер {ClusterName}", message.TaskId, selectedCluster.Name);
+                    _logger.LogInformation("Задача {TaskId} назначена кластеру {ClusterName}", message.TaskId, selectedCluster.Name);
 
-                    // Здесь нужно отправить задачу на кластер (HTTP/gRPC)
-                    // Например, вызов кластера через ClusterExecutor
-                    // await _clusterExecutor.ExecuteTaskAsync(selectedCluster, message);
+                    // Отправка задачи на кластер через gRPC (реализуйте IClusterExecutor)
+                    // await clusterExecutor.ExecuteTaskAsync(selectedCluster, message, cancellationToken);
 
-                    // После успешной отправки – подтверждаем (ack) сообщение уже сделано в SubscribeTaskQueue
+                    // После успешной отправки сообщение будет подтверждено автоматически (в SubscribeTaskQueue)
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Ошибка обработки задачи {TaskId}", message.TaskId);
-                    // Не подтверждаем – сообщение вернётся в очередь
+                    // Сообщение НЕ подтверждается, вернётся в очередь
                     throw;
                 }
             });
 
-            // Бесконечное ожидание (background service должен держать процесс живым)
             while (!stoppingToken.IsCancellationRequested)
-            {
                 await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
-            }
         }
     }
 }

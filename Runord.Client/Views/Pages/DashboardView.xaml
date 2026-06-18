@@ -4,9 +4,287 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Runord.Client.Views.Pages"
+             xmlns:uiElements="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+             d:DesignHeight="768" d:DesignWidth="1120"
+             Background="#191919"
+             x:Name="dashboardRoot">
+
+    <UserControl.Resources>
+        <Style x:Key="FlatListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="71,52,71,40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Приветствие и карточки статистики -->
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        Margin="0,0,0,28">
+
+                <TextBlock Text="{Binding UserName, StringFormat='С ВОЗВРАЩЕНИЕМ, {0}!', FallbackValue='REFERTSON!'}"
+                           FontSize="28.5"
+                           FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans"
+                           FontWeight="Regular"
+                           Foreground="#FFFFFF"
+                           Width="273"
+                           Height="76"
+                           TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top"
+                            Margin="24,0,0,0">
+                    <uiElements:StatCard Header="КОЛ-ВО КЛАСТЕРОВ" Value="{Binding TotalClustersCount}" Color="#FF5555" Margin="0,0,24,0"/>
+                    <uiElements:StatCard Header="КОЛ-ВО АКТИВ. ЗАДАЧ" Value="{Binding ActiveTasksCount}" Color="#FFB300" Margin="0,0,24,0"/>
+                    <uiElements:StatCard Header="КОЛ-ВО ПРОЕКТОВ" Value="{Binding ProjectsCount}" Color="#4D94FF"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Основной контент -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6.5*"/>
+                    <ColumnDefinition Width="3.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Левая колонка (Задачи и Журнал) -->
+                <Grid Grid.Column="0" Margin="0,0,40,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="АКТИВНЫЕ ЗАДАЧИ" Style="{StaticResource SectionHeaderStyle}"/>
+
+                    <ListBox x:Name="TasksListBox" Grid.Row="1" ItemsSource="{Binding ActiveTasks}" Background="Transparent" BorderThickness="0" ItemContainerStyle="{StaticResource FlatListBoxItemStyle}" Margin="0,0,0,16">
+                        <ListBox.Style>
+                            <Style TargetType="ListBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Self}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Style>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#212121" CornerRadius="4" Margin="0,0,0,8" Padding="20,16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" Foreground="#FFFFFF" FontSize="15" FontWeight="Medium" Margin="0,0,0,4"/>
+                                            <TextBlock Text="{Binding Uuid, StringFormat='UUID: {0}'}" Foreground="#888888" FontSize="11"/>
+                                        </StackPanel>
+
+                                        <ProgressBar x:Name="taskProgress" Grid.Column="1" Value="{Binding Progress}" Maximum="100" Width="140" Height="4" BorderThickness="0" Background="#333333" Foreground="#55FF6E" Margin="20,0" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Progress, StringFormat={}{0}%}" Foreground="#FFFFFF" FontSize="13" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                        <TextBlock x:Name="statusText" Grid.Column="3" Text="{Binding Status}" Foreground="#55FF6E" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+
+                                        <Button Grid.Column="4" Command="{Binding DataContext.CancelTaskCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" Cursor="Hand" Width="20" Height="20">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <TextBlock Text="✕" Foreground="#666666" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="Ожидание">
+                                        <Setter TargetName="taskProgress" Property="Foreground" Value="#FFB300"/>
+                                        <Setter TargetName="statusText" Property="Foreground" Value="#FFB300"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="Ошибка">
+                                        <Setter TargetName="taskProgress" Property="Foreground" Value="#FF5555"/>
+                                        <Setter TargetName="statusText" Property="Foreground" Value="#FF5555"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Border Grid.Row="1" Background="#212121" CornerRadius="4" Padding="20,32" Margin="0,0,0,16">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasItems, ElementName=TasksListBox}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="АКТИВНЫЕ ЗАДАЧИ ОТСУТСТВУЮТ" Foreground="#555555" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                            <TextBlock Text="Система находится в режиме ожидания новых вычислительных процессов" Foreground="#444444" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <uiElements:PrimaryButton Grid.Row="2" ButtonText="Все задачи" Width="140" Height="35" HorizontalAlignment="Left" ButtonCornerRadius="3" ButtonBackground="#FFFF4D4D" ButtonForeground="White" ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333" ButtonFontSize="13" ButtonFontWeight="Medium" ButtonCommand="{Binding OpenAllTasksCommand}" Margin="0,0,0,32"/>
+
+                    <!-- Раздел Журнала -->
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="ЖУРНАЛ СИСТЕМЫ" Style="{StaticResource SectionHeaderStyle}"/>
+
+                        <ScrollViewer Grid.Row="1" Margin="0,0,0,16" MaxHeight="340" 
+                                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+
+                            <ItemsControl ItemsSource="{Binding SystemLogs}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#212121" CornerRadius="4" Margin="0,0,10,8" Padding="16,14" MinHeight="60">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border x:Name="TypeMarker" Grid.Column="0" Background="#55AAFF" CornerRadius="1.5"/>
+
+                                                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,6">
+                                                        <Path x:Name="TypeIcon" Width="14" Height="14" Margin="0,2,8,0" 
+                                          VerticalAlignment="Center" Stretch="Uniform" Fill="#55AAFF"/>
+
+                                                        <TextBlock Text="{Binding Timestamp, StringFormat='[{0}]'}" 
+                                               Foreground="#888888" FontSize="12" FontFamily="Consolas" 
+                                               VerticalAlignment="Center" Margin="0,0,0,0"/>
+
+                                                        <TextBlock x:Name="levelText" Text="{Binding Level, StringFormat=' — {0}'}" 
+                                               Foreground="#55AAFF" FontSize="12" FontWeight="Bold" 
+                                               VerticalAlignment="Center" Margin="4,0,0,0"/>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{Binding Message}" Foreground="#E0E0E0" 
+                                           FontSize="13" TextWrapping="WrapWithOverflow" LineHeight="18"
+                                           Margin="22,0,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Level}" Value="WARNING">
+                                                <Setter TargetName="TypeMarker" Property="Background" Value="#FFCC00"/>
+                                                <Setter TargetName="levelText" Property="Foreground" Value="#FFCC00"/>
+                                                <Setter TargetName="TypeIcon" Property="Fill" Value="#FFCC00"/>
+                                                <Setter TargetName="TypeIcon" Property="Data" Value="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Level}" Value="ERROR">
+                                                <Setter TargetName="TypeMarker" Property="Background" Value="#FF4D4D"/>
+                                                <Setter TargetName="levelText" Property="Foreground" Value="#FF4D4D"/>
+                                                <Setter TargetName="TypeIcon" Property="Fill" Value="#FF4D4D"/>
+                                                <Setter TargetName="TypeIcon" Property="Data" Value="M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M17,15.59L15.59,17L12,13.41L8.41,17L7,15.59L10.59,12L7,8.41L8.41,7L12,10.59L15.59,7L17,8.41L13.41,12L17,15.59Z"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Level}" Value="INFO">
+                                                <Setter TargetName="TypeMarker" Property="Background" Value="#55AAFF"/>
+                                                <Setter TargetName="levelText" Property="Foreground" Value="#55AAFF"/>
+                                                <Setter TargetName="TypeIcon" Property="Fill" Value="#55AAFF"/>
+                                                <Setter TargetName="TypeIcon" Property="Data" Value="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+
+                <!-- Правая колонка (Проекты и Кластеры) -->
+                <StackPanel Grid.Column="1" Margin="2,0,0,0">
+
+                    <TextBlock Text="НЕДАВНИЕ ПРОЕКТЫ" Style="{StaticResource SectionHeaderStyle}"/>
+
+                    <ListBox ItemsSource="{Binding RecentProjects}" Background="Transparent" BorderThickness="0" ItemContainerStyle="{StaticResource FlatListBoxItemStyle}" Margin="0,0,0,16">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#212121" Margin="0,0,0,8" Padding="16,14" CornerRadius="4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#4D94FF" CornerRadius="1.5"/>
+                                        <StackPanel Grid.Column="1" Margin="16,-3,0,0">
+                                            <TextBlock Text="{Binding Title}" Foreground="#FFFFFF" FontSize="14" FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding TimeAgo}" Foreground="#888888" FontSize="11" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <uiElements:PrimaryButton ButtonText="Все проекты" Height="35" ButtonCornerRadius="3" ButtonBackground="#FFFF4D4D" ButtonForeground="White" ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333" ButtonFontSize="13" ButtonFontWeight="Medium" ButtonCommand="{Binding OpenAllProjectsCommand}" Margin="0,0,0,32"/>
+
+                    <TextBlock Text="НАИБОЛЕЕ НАГРУЖЕННЫЕ КЛАСТЕРЫ" Style="{StaticResource SectionHeaderStyle}"/>
+
+                    <ListBox ItemsSource="{Binding TopLoadedClusters}" Background="Transparent" BorderThickness="0" ItemContainerStyle="{StaticResource FlatListBoxItemStyle}" Margin="0,0,0,16">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#212121" Margin="0,0,0,8" Padding="16,14" CornerRadius="4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#FF5555" CornerRadius="1.5"/>
+
+                                        <StackPanel Grid.Column="1" Margin="16,-3,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding NodeName}" Foreground="#FFFFFF" FontSize="14" FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Ip}" Foreground="#888888" FontSize="11" Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Column="2" Text="{Binding LoadPercentage, StringFormat={}{0}%}" Foreground="#FFFFFF" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <uiElements:PrimaryButton ButtonText="Все кластеры" Height="35" ButtonCornerRadius="3" ButtonBackground="#FFFF4D4D" ButtonForeground="White" ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333" ButtonFontSize="13" ButtonFontWeight="Medium" ButtonCommand="{Binding OpenAllClustersCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

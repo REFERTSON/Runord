@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Runord.Client.UIElements.Controls.StatCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Runord.Client.UIElements.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="77" d:DesignWidth="180"
+             MinHeight="77" MinWidth="180">
+    
+    <Grid Background="#1E1E1E">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{Binding Color, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='#FF5555'}"/>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="17">
+            <TextBlock Text="{Binding Header, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='ЗАГОЛОВОК'}" 
+                       FontFamily="pack://application:,,,/Runord.Client.UIElemets;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex Medium"
+                       FontWeight="Regular"
+                       Foreground="#9E9E9E" 
+                       FontSize="11"/>
+
+            <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='9999'}" 
+                       FontFamily="pack://application:,,,/Runord.Client.UIElemets;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex Light"
+                       FontWeight="Regular"
+                       Foreground="White" 
+                       FontSize="19"
+                       Margin="0,2,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Runord.Hub.Hubs
 {
+    [Authorize]
     public class TaskHub : Microsoft.AspNetCore.SignalR.Hub
     {
         public async Task SubscribeToTask(string taskId)
@@ -15,11 +16,10 @@ namespace Runord.Hub.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"task_{taskId}");
         }
 
-        public async Task RequestAvailableTaskTypes()
+        // Клиент может сообщить о прогрессе задачи (опционально)
+        public async Task SendProgress(Guid taskId, int percent)
         {
-            // Можно через сервис, но для простоты оставляем заглушку
-            var types = new List<string> { "Матричное умножение", "Вычисление Pi" };
-            await Clients.Caller.SendAsync("TaskTypesReceived", types);
+            await Clients.Group($"task_{taskId}").SendAsync("TaskProgress", taskId, percent);
         }
     }
 }

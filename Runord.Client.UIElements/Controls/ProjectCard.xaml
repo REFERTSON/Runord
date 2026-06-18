@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Runord.Client.UIElements.Controls.ProjectCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Runord.Client.UIElements.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="130" d:DesignWidth="307"
+             x:Name="projectCardRoot">
+
+    <Border Background="#212121" CornerRadius="3">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" 
+                    Background="#FFFF4D4D"
+                    CornerRadius="0,3,3,0" 
+                    Width="5"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0,16"/>
+
+            <Grid Grid.Column="1" Margin="14,16,10,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="{Binding ProjectName, ElementName=projectCardRoot}" 
+                           Foreground="#FFFFFF" FontSize="14" FontWeight="Medium" 
+                           TextTrimming="CharacterEllipsis" Margin="0,0,0,6"/>
+
+                <TextBlock Grid.Row="1"
+                           Text="{Binding ProjectDescription, ElementName=projectCardRoot}" 
+                           Foreground="#888888" FontSize="12" 
+                           TextWrapping="Wrap" 
+                           TextTrimming="CharacterEllipsis"
+                           LineHeight="16"/>
+            </Grid>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,16,16,0">
+                <local:PrimaryButton Width="26" Height="26"
+                                     ButtonCornerRadius="3" Margin="0,0,10,0"
+                                     ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                     ButtonIconWidth="10" ButtonIconHeight="10" ButtonForeground="#AAAAAA"
+                                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Edit.svg"
+                                     ButtonCommand="{Binding EditCommand, ElementName=projectCardRoot}"
+                                     ButtonCommandParameter="{Binding EditCommandParameter, ElementName=projectCardRoot}"/>
+
+                <local:PrimaryButton Width="26" Height="26"
+                                     ButtonCornerRadius="3"
+                                     ButtonBackground="#2C2C2C" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                     ButtonIconWidth="10" ButtonIconHeight="10" ButtonForeground="#AAAAAA"
+                                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg"
+                                     ButtonCommand="{Binding DeleteCommand, ElementName=projectCardRoot}"
+                                     ButtonCommandParameter="{Binding DeleteCommandParameter, ElementName=projectCardRoot}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

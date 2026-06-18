@@ -4,13 +4,13 @@ using Runord.Hub.Data.Repositories.Interfaces;
 
 namespace Runord.Hub.Data.Repositories
 {
-    public class TaskFileRepository : BaseRepository<TaskFile>, ITaskFileRepository
+    public class TaskFileRepository : BaseRepository<TaskFileEntity>, ITaskFileRepository
     {
         public TaskFileRepository(AppDbContext context) : base(context)
         {
         }
 
-        public async Task<IEnumerable<TaskFile>> GetFilesByTaskIdAsync(Guid taskId, bool? isResult = null, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TaskFileEntity>> GetFilesByTaskIdAsync(Guid taskId, bool? isResult = null, CancellationToken cancellationToken = default)
         {
             var query = _dbSet.Where(f => f.TaskId == taskId);
 
@@ -22,7 +22,7 @@ namespace Runord.Hub.Data.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<TaskFile?> GetByMd5HashAsync(string md5Hash, CancellationToken cancellationToken = default)
+        public async Task<TaskFileEntity?> GetByMd5HashAsync(string md5Hash, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(md5Hash)) return null;
             return await _dbSet.FirstOrDefaultAsync(f => f.Md5Hash == md5Hash, cancellationToken);

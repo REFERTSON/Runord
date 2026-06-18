@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "Runord.Hub.Grpc";
+
+package cluster;
+
+service ClusterCallback {
+    rpc ReportMetrics (MetricsRequest) returns (MetricsResponse);
+    rpc ReportResult (ResultRequest) returns (ResultResponse);
+}
+
+message MetricsRequest {
+    string task_id = 1;
+    double avg_cpu_load = 2;
+    double computation_imbalance = 3;
+    double ram_usage_gb = 4;
+    double mpi_io_percent = 5;
+    int32 process_count = 6;
+    double io_duration_seconds = 7;
+    double acceleration_efficiency = 8;
+    string target_cluster_node = 9;
+}
+
+message MetricsResponse {
+    bool success = 1;
+}
+
+message ResultRequest {
+    string task_id = 1;
+    bool is_success = 2;
+    string error_message = 3;
+    repeated string result_files = 4;
+}
+
+message ResultResponse {
+    bool success = 1;
+}

@@ -1,8 +1,5 @@
 ﻿using Runord.Shared.Base;
 using Runord.Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Runord.Shared.DTOs.Cluster
 {
@@ -12,26 +9,15 @@ namespace Runord.Shared.DTOs.Cluster
         string IpAddress,
         ClusterStatus Status,
         double CpuTotalPercent,
-        double RamTotalGb
-    ) : BaseDto(Id);
-
-    public record ShortClusterMetricDto(
+        double RamTotalGb,
         double CpuUsagePercent,
         double RamUsageGb
-    );
+    ) : BaseDto(Id);
 
-    public record ClusterMetricsDto(
-        Guid NodeId,
-        ClusterStatus Status,
-        double CpuUsagePercent,
-        double CpuTotalPercent,
-        double RamUsageGb,
-        double StorageUsageGb,
-        double NetworkInMbps,
-        double NetworkOutMbps
+    public record CreateClusterRequest(string Name, string IpAddress);
+    public record UpdateClusterRequest(Guid Id, string Name, string IpAddress);
+    public record ClusterChangedNotification(
+        ClusterAction Action,
+        ClusterDto Cluster
     );
-
-    public record CreateClusterRequest(string Name, string IpAddress, double RamTotalGb, double StorageTotalGb);
-    public record UpdateClusterRequest(Guid Id, ClusterDto Cluster);
-    public record DeleteClusterRequest(Guid Id);
 }

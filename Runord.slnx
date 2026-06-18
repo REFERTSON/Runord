@@ -4,6 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/+ Common/">
+    <Project Path="Runord.Shared/Runord.Shared.csproj" Id="6532dfd2-5a93-4726-bbf8-58e4941cdf58" />
+  </Folder>
   <Folder Name="/Client/">
     <Project Path="Runord.Client.UIElements/Runord.Client.UIElements.csproj" Id="e4259a67-5484-4c39-a6d5-b6e8f455f8e2" />
     <Project Path="Runord.Client/Runord.Client.csproj" />
@@ -11,9 +14,6 @@
   <Folder Name="/Cluster/">
     <Project Path="Runord.Cluster.Server/Runord.Cluster.Server.csproj" Id="cd538264-39e9-42d2-9acf-c1decf764627" />
     <Project Path="Runord.Cluster.Worker/Runord.Cluster.Worker.csproj" Id="99dfd24c-289b-4b65-b163-cd3dbb3a9392" />
-  </Folder>
-  <Folder Name="/Common/">
-    <Project Path="Runord.Shared/Runord.Shared.csproj" Id="6532dfd2-5a93-4726-bbf8-58e4941cdf58" />
   </Folder>
   <Folder Name="/Hub/">
     <Project Path="Runord.Hub/Runord.Hub.csproj" />

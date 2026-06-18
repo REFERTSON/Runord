@@ -22,7 +22,7 @@
                 <Label Content="v 0.0.1-beta" FontWeight="Regular" FontFamily="Montserrat" Foreground="#999999" FontSize="17" Margin="3,0,0,0"/>
             </StackPanel>
 
-            <svgc:SvgViewbox Source="pack://application:,,,/Assets/Icons/Logo.svg" 
+            <svgc:SvgViewbox Source="pack://application:,,,/Runord.Client;component/Assets/Icons/Logo.svg" 
                              Width="39" Height="33.55" 
                              HorizontalAlignment="Right" 
                              VerticalAlignment="Top" 

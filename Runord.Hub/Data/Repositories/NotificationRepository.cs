@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Runord.Shared.Base;
-using Runord.Shared.DTOs.Notification;
 using Runord.Shared.Entities;
 using Runord.Hub.Data.Repositories.Interfaces;
+using Runord.Shared.Filters;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Runord.Hub.Data.Repositories
 {
@@ -10,12 +11,10 @@ namespace Runord.Hub.Data.Repositories
     {
         public NotificationRepository(AppDbContext context) : base(context) { }
 
-        public async Task<PagedResponse<NotificationEntity>> GetPagedUserNotificationsAsync(
+        public async Task<IEnumerable<NotificationEntity>> GetUserNotificationsAsync(
             Guid userId,
             NotificationFilter filter,
-            int page,
-            int pageSize,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             var query = _dbSet.Where(n => n.UserId == userId);
 
@@ -30,20 +29,11 @@ namespace Runord.Hub.Data.Repositories
             if (!string.IsNullOrWhiteSpace(filter.SearchText))
                 query = query.Where(n => n.Title.Contains(filter.SearchText) || n.Message.Contains(filter.SearchText));
 
-            var totalCount = await query.CountAsync(cancellationToken);
-            var items = await query
+            var notifications = await query
                 .OrderByDescending(n => n.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
-            return new PagedResponse<NotificationEntity>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                PageNumber = page,
-                PageSize = pageSize
-            };
+            return notifications;
         }
 
         public async Task<int> MarkAllAsReadAsync(Guid userId, CancellationToken cancellationToken = default)

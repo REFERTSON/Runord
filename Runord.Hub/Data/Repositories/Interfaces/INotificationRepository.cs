@@ -1,6 +1,6 @@
 ﻿using Runord.Shared.Base;
-using Runord.Shared.DTOs.Notification;
 using Runord.Shared.Entities;
+using Runord.Shared.Filters;
 using Runord.Shared.Interfaces;
 
 namespace Runord.Hub.Data.Repositories.Interfaces
@@ -8,11 +8,9 @@ namespace Runord.Hub.Data.Repositories.Interfaces
     public interface INotificationRepository : IBaseRepository<NotificationEntity>
     {
         // Пагинация + фильтрация (возвращает PagedResponse)
-        Task<PagedResponse<NotificationEntity>> GetPagedUserNotificationsAsync(
+        Task<IEnumerable<NotificationEntity>> GetUserNotificationsAsync(
             Guid userId,
             NotificationFilter filter,
-            int page,
-            int pageSize,
             CancellationToken cancellationToken = default);
 
         // Массовое обновление (отметить все как прочитанные)
@@ -20,8 +18,5 @@ namespace Runord.Hub.Data.Repositories.Interfaces
 
         // Массовое удаление всех уведомлений пользователя
         Task<int> DeleteAllForUserAsync(Guid userId, CancellationToken cancellationToken = default);
-
-        // Добавление нескольких записей (для массовой рассылки)
-        Task AddRangeAsync(IEnumerable<NotificationEntity> entities, CancellationToken cancellationToken = default);
     }
 }

@@ -1,8 +1,8 @@
-﻿using Runord.Shared.DTOs.Cluster;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace Runord.Hub.Hubs
 {
+    [Authorize(Roles = "Admin")]
     public class ClusterHub : Microsoft.AspNetCore.SignalR.Hub
     {
         public async Task SubscribeToClusterUpdates()
@@ -10,10 +10,8 @@ namespace Runord.Hub.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, "all_clusters");
         }
 
-        // Метод вызывается из фонового сервиса при обновлении метрик
-        public async Task SendMetricsUpdate(ClusterDto dto)
-        {
-            await Clients.Group("all_clusters").SendAsync("MetricsUpdated", dto);
+        public async Task UnsubscribeToClusterUpdates() { 
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "all_clusters");
         }
     }
 }

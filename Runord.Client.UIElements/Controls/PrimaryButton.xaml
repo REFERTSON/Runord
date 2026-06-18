@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="Runord.Client.UIElements.Controls.PrimaryButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Runord.Client.UIElements.Controls"
+             xmlns:converter="clr-namespace:Runord.Client.UIElements.Converters"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             mc:Ignorable="d" 
+             d:DesignHeight="35" d:DesignWidth="35"
+             x:Name="root">
+
+    <UserControl.Resources>
+        <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Button x:Name="PART_Button"
+            Command="{Binding ButtonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+            CommandParameter="{Binding ButtonCommandParameter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+            Click="OnButtonClick"
+            Cursor="Hand"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Background="{Binding ButtonBackground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+            BorderThickness="0">
+
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{Binding ButtonCornerRadius, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                        SnapsToDevicePixels="True">
+
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Контейнер для SVG -->
+                        <ContentControl x:Name="svgContainer" 
+                                        Grid.Column="0"
+                                        Width="{Binding ButtonIconWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                        Height="{Binding ButtonIconHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                        VerticalAlignment="Center">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ButtonIconUri, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ButtonIconUri, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                            <svgc:SvgViewbox UriSource="{Binding ButtonIconUri, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}" Stretch="Uniform"/>
+                        </ContentControl>
+
+                        <!-- Иконка Path -->
+                        <Path x:Name="iconPath" 
+                              Grid.Column="0"
+                              Data="{Binding ButtonIconData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                              Fill="{Binding ButtonForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                              Width="{Binding ButtonIconWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                              Height="{Binding ButtonIconHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                              Stretch="Uniform"
+                              Visibility="{Binding ButtonIconData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}, Converter={StaticResource NullToVisibilityConverter}}"
+                              VerticalAlignment="Center"
+                              Margin="0,0,2,0"/>
+
+                        <!-- Текст кнопки -->
+                        <TextBlock x:Name="textBlock"
+                                   Grid.Column="1"
+                                   Text="{Binding ButtonText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                   Foreground="{Binding ButtonForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                   FontFamily="{Binding ButtonFontFamily, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                   FontSize="{Binding ButtonFontSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                   FontWeight="{Binding ButtonFontWeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ButtonText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ButtonText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+
+                <ControlTemplate.Triggers>
+                    <!-- Если текст ЕСТЬ, добавляем отступы между иконкой и текстом -->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Visibility, ElementName=textBlock}" Value="Visible"/>
+                            <Condition Binding="{Binding Visibility, ElementName=svgContainer}" Value="Visible"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter TargetName="svgContainer" Property="Margin" Value="-5,0,7,0"/>
+                    </MultiDataTrigger>
+
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Visibility, ElementName=textBlock}" Value="Visible"/>
+                            <Condition Binding="{Binding Visibility, ElementName=iconPath}" Value="Visible"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter TargetName="iconPath" Property="Margin" Value="0,0,8,0"/>
+                    </MultiDataTrigger>
+
+                    <!-- Состояния мыши -->
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Background" Value="{Binding ButtonHoverBackground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter TargetName="border" Property="Background" Value="{Binding ButtonPressedBackground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PrimaryButton}}}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value="0.5"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Button.Template>
+    </Button>
+</UserControl>

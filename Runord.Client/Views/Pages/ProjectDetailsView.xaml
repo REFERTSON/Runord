@@ -4,9 +4,277 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Runord.Client.Views.Pages"
+             xmlns:uiElements="clr-namespace:Runord.Client.UIElements.Controls;assembly=Runord.Client.UIElements"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="768" d:DesignWidth="1120">
+
+    <Grid Background="#191919">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="54,36,54,0">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" Margin="-7,0,0,0">
+                    <uiElements:PrimaryButton ButtonText="Проекты"
+                                             Width="70" Height="28"
+                                             ButtonCornerRadius="2"
+                                             ButtonFontSize="13"
+                                             ButtonBackground="#191919" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                             ButtonForeground="#AAAAAA"
+                                             ButtonCommand="{Binding EditCommand, ElementName=nodeCardRoot}"
+                                             ButtonCommandParameter="{Binding EditCommandParameter, ElementName=nodeCardRoot}"/>
+
+                    <TextBlock FontSize="13" FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans" Margin="0,22,0,20" VerticalAlignment="Center">
+                        <Run Text="  /  " Foreground="#444444"/>
+                        <Run Text="{Binding Project.Name}" Foreground="#888888"/>   
+                    </TextBlock>
+                </StackPanel>
+                
+                <!-- Правая часть: Кнопки управления (заменил Margin под новые отступы 16px сверху) -->
+                <StackPanel Grid.Column="2" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Top" 
+                        Margin="0,16,16,0">
+
+                    <uiElements:PrimaryButton Width="30" Height="30"
+                                     ButtonCornerRadius="3"
+                                     Margin="0,0,10,0"
+                                     ButtonBackground="#191919" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                     ButtonIconWidth="13" ButtonIconHeight="13" ButtonForeground="#AAAAAA"
+                                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Edit.svg"
+                                     ButtonCommand="{Binding EditCommand, ElementName=nodeCardRoot}"
+                                     ButtonCommandParameter="{Binding EditCommandParameter, ElementName=nodeCardRoot}"/>
+
+                    <uiElements:PrimaryButton Width="30" Height="30"
+                                     ButtonCornerRadius="3"
+                                     ButtonBackground="#191919" ButtonHoverBackground="#404040" ButtonPressedBackground="#1A1A1A"
+                                     ButtonIconWidth="13" ButtonIconHeight="13" ButtonForeground="#AAAAAA"
+                                     ButtonIconUri="pack://application:,,,/Runord.Client.UIElements;component/Assets/Icons/Trash.svg"
+                                     ButtonCommand="{Binding DeleteCommand, ElementName=nodeCardRoot}"
+                                     ButtonCommandParameter="{Binding DeleteCommandParameter, ElementName=nodeCardRoot}"/>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="{Binding Project.Name}" 
+                       FontSize="32" 
+                       FontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/IBMPlexSans.ttf#IBM Plex Sans" 
+                       FontWeight="Regular" 
+                       Foreground="#FFFFFF" 
+                       TextWrapping="Wrap" 
+                       HorizontalAlignment="Left"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ID: " 
+                           FontSize="13" 
+                           Foreground="#666666" 
+                           TextWrapping="Wrap" 
+                           Margin="0,8,0,0" 
+                           MaxWidth="800" 
+                           HorizontalAlignment="Left"/>
+                
+                <TextBlock Text="{Binding Project.Id}" 
+                           FontSize="13" 
+                           Foreground="#A8A8A8" 
+                           TextWrapping="Wrap" 
+                           Margin="0,8,0,0" 
+                           MaxWidth="800" 
+                           HorizontalAlignment="Left"/>
+            </StackPanel>
             
+
+            <TextBlock Text="{Binding Project.Description}" 
+                       FontSize="13" 
+                       Foreground="#A8A8A8" 
+                       TextWrapping="Wrap" 
+                       Margin="0,8,0,0" 
+                       MaxWidth="800" 
+                       HorizontalAlignment="Left"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,24,0,0">
+                <uiElements:StatCard Header="ВСЕГО ЗАДАЧ" Value="{Binding Project.TaskCount}" Color="#55A4FF" Margin="0,0,20,0"/>
+                <uiElements:StatCard Header="ВЫПОЛНЯЕТСЯ" Value="{Binding ActiveTasksCount}" Color="#FFB237" Margin="0,0,20,0"/>
+                <uiElements:StatCard Header="ВЫПОЛНЕНО" Value="{Binding CompletedTasksCount}" Color="#55FF6E" Margin="0,0,20,0"/>
+                <uiElements:StatCard Header="ОШИБКИ" Value="{Binding ErrorTasksCount}" Color="#FF5555"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="1" Margin="54,24,52,15" Height="55" BorderBrush="#3A3A3A" BorderThickness="1" Background="#212121">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="#191919" BorderBrush="#2D2D2D" BorderThickness="1" CornerRadius="3" Height="35" Width="300" HorizontalAlignment="Left" Margin="12,0,0,0">
+                    <Grid>
+                        <TextBlock Text="Поиск по задачам..." Foreground="#555555" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" Foreground="#FFFFFF" FontSize="12" Padding="12,0,12,0" VerticalContentAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <uiElements:PrimaryButton Grid.Column="0" ButtonText="Фильтр" Width="100" Height="35" ButtonCornerRadius="3" ButtonBackground="#FF2C2C2C" ButtonForeground="White" ButtonHoverBackground="#FF444444" ButtonPressedBackground="#FF111111" ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex" ButtonFontSize="12" ButtonFontWeight="Medium" ButtonIconWidth="14" ButtonIconHeight="14" ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Filter.svg" Margin="12,0"/>
+                    <uiElements:PrimaryButton Grid.Column="1" ButtonText="Создать задачу" Width="143" Height="35" ButtonCornerRadius="3" ButtonBackground="#FFFF4D4D" ButtonForeground="White" ButtonHoverBackground="#FFFF6666" ButtonPressedBackground="#FFCC3333" ButtonFontFamily="pack://application:,,,/Runord.Client;component/Assets/Fonts/RobotoFlex.ttf#Roboto Flex" ButtonFontSize="12" ButtonFontWeight="Medium" ButtonIconUri="pack://application:,,,/Runord.Client;component/Assets/Icons/Add.svg" ButtonIconWidth="10" ButtonIconHeight="10" Margin="0,0,14,0"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="54,10,30,20">
+            <ItemsControl ItemsSource="{Binding Tasks}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" VerticalAlignment="Top"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#212121" CornerRadius="4" Margin="0,0,16,16">
+                            <Grid>
+                                <Border x:Name="StatusStripe" Width="3" Height="36" Background="#FFB300" CornerRadius="0,2,2,0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,14,0,0"/>
+
+                                <Grid Margin="24,12,14,12">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding Uuid}" Foreground="#555555" FontSize="10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+
+                                        <Border x:Name="PriorityBadge" Grid.Column="1" Background="#33FFFFFF" CornerRadius="3" Padding="6,2" Margin="0,0,10,0">
+                                            <TextBlock x:Name="PriorityText" Text="{Binding Priority}" Foreground="#FFFFFF" FontSize="10" FontWeight="SemiBold"/>
+                                        </Border>
+
+                                        <Button Grid.Column="2" Background="Transparent" BorderThickness="0" Cursor="Hand" Width="20" Height="20" Margin="0,0,8,0">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Path Data="M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12,17c-2.76,0-5-2.24-5-5s2.24-5,5-5 5,2.24 5,5-2.24,5-5,5zM12,9c-1.66,0-3,1.34-3,3s1.34,3,3,3 3-1.34,3-3-1.34-3-3-3z" Fill="#888888" Stretch="Uniform" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Opacity" Value="0.7"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <Button Grid.Column="3" Background="Transparent" BorderThickness="0" Cursor="Hand" Width="18" Height="18">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <TextBlock Text="✕" Foreground="#666666" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                                        <TextBlock Text="{Binding Name}" Foreground="#FFFFFF" FontSize="16" FontWeight="Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Type}" Foreground="#888888" FontSize="12" Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <Grid Grid.Row="2" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Name="StatusText" Text="{Binding Status}" Foreground="#FFB300" FontSize="12" FontWeight="Bold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="📁" Foreground="#888888" FontSize="10" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding Files}" Foreground="#A8A8A8" FontSize="11" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Grid.Row="3" Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ProgressBar x:Name="TaskProgress" Value="{Binding Progress}" Maximum="100" Height="4" BorderThickness="0" Background="#333333" Foreground="#FFB300" Margin="0,0,14,0"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}" Foreground="#FFFFFF" FontSize="13" FontWeight="Medium"/>
+                                    </Grid>
+
+                                    <Grid Grid.Row="4">
+                                        <TextBlock Text="{Binding Owner}" Foreground="#A8A8A8" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Priority}" Value="Высокий">
+                                <Setter TargetName="PriorityBadge" Property="Background" Value="#33FF5555"/>
+                                <Setter TargetName="PriorityText" Property="Foreground" Value="#FF5555"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Priority}" Value="Средний">
+                                <Setter TargetName="PriorityBadge" Property="Background" Value="#33FFB300"/>
+                                <Setter TargetName="PriorityText" Property="Foreground" Value="#FFB300"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Priority}" Value="Низкий">
+                                <Setter TargetName="PriorityBadge" Property="Background" Value="#3355AAFF"/>
+                                <Setter TargetName="PriorityText" Property="Foreground" Value="#55AAFF"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Выполняется">
+                                <Setter TargetName="StatusStripe" Property="Background" Value="#55AAFF"/>
+                                <Setter TargetName="StatusText" Property="Foreground" Value="#55AAFF"/>
+                                <Setter TargetName="TaskProgress" Property="Foreground" Value="#55AAFF"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Выполнено">
+                                <Setter TargetName="StatusStripe" Property="Background" Value="#55FF6E"/>
+                                <Setter TargetName="StatusText" Property="Foreground" Value="#55FF6E"/>
+                                <Setter TargetName="TaskProgress" Property="Foreground" Value="#55FF6E"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Ошибка">
+                                <Setter TargetName="StatusStripe" Property="Background" Value="#FF5555"/>
+                                <Setter TargetName="StatusText" Property="Foreground" Value="#FF5555"/>
+                                <Setter TargetName="TaskProgress" Property="Foreground" Value="#FF5555"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="Отменено">
+                                <Setter TargetName="StatusStripe" Property="Background" Value="#A8A8A8"/>
+                                <Setter TargetName="StatusText" Property="Foreground" Value="#A8A8A8"/>
+                                <Setter TargetName="TaskProgress" Property="Foreground" Value="#A8A8A8"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

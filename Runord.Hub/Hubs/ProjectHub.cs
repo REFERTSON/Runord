@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Runord.Shared.DTOs.Task;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace Runord.Hub.Hubs
 {
+    [Authorize]
     public class ProjectHub : Microsoft.AspNetCore.SignalR.Hub
     {
         public async Task SubscribeToProject(Guid projectId)
@@ -10,10 +10,9 @@ namespace Runord.Hub.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, $"project_{projectId}");
         }
 
-        // Теперь TaskShortDto содержит ProjectId
-        public async Task TaskUpdated(TaskDto task)
+        public async Task UnsubscribeFromProject(Guid projectId)
         {
-            await Clients.Group($"project_{task.ProjectId}").SendAsync("TaskUpdated", task);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"project_{projectId}");
         }
     }
 }

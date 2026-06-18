@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Runord.Hub.Services;
 using Runord.Shared.Base;
 using Runord.Shared.DTOs.Task;
+using Runord.Shared.Filters;
 using Runord.Shared.Interfaces.Services;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace Runord.Hub.Controllers
@@ -12,92 +12,92 @@ namespace Runord.Hub.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Description("Управление задачами в рамках проектов.")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
 
-        public TaskController(ITaskService taskService)
+        public TaskController(ITaskService taskService) => _taskService = taskService;
+
+        private Guid GetUserId()
         {
-            _taskService = taskService;
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(claim, out var id) ? id : Guid.Empty;
         }
 
         [HttpGet]
-        public async Task<ActionResult<Result<PagedResponse<TaskDto>>>> GetTasks(
-            [FromQuery] Guid? projectId = null,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 20)
+        [EndpointSummary("Получить список задач")]
+        [EndpointDescription("Возвращает задачи с учётом фильтрации и прав пользователя.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<IEnumerable<TaskDto>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<IEnumerable<TaskDto>>>> GetTasks([FromQuery] TaskFilter filter)
         {
-            // Извлекаем строковый Id пользователя из Claim-ов
-            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Безопасно парсим string в Guid?, как того требует сигнатура метода GetTasksAsync[cite: 4, 5]
-            Guid? userId = Guid.TryParse(userIdStr, out var parsedGuid) ? parsedGuid : null;
+            var userId = GetUserId();
+            if (userId == Guid.Empty) return Unauthorized();
             var isAdmin = User.IsInRole("Admin");
-
-            var result = await _taskService.GetTasksAsync(userId, isAdmin, projectId, page, pageSize);
+            var result = await _taskService.GetTasksAsync(filter ?? new TaskFilter(), userId, isAdmin);
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<Result<TaskDto>>> GetTask(Guid id)
+        [EndpointSummary("Получить задачу по ID")]
+        [EndpointDescription("Возвращает详细信息 задачи, если доступ разрешён.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<TaskDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response<TaskDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<TaskDto>>> GetTask(Guid id)
         {
-            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (!Guid.TryParse(userIdStr, out var userId))
-                return Unauthorized();
-
-        var isAdmin = User.IsInRole("Admin");
-        var result = await _taskService.GetTaskByIdAsync(id, userId, isAdmin);
-            if (!result.IsSuccess)
-                return NotFound(result);
-
+            var userId = GetUserId();
+            if (userId == Guid.Empty) return Unauthorized();
+            var isAdmin = User.IsInRole("Admin");
+            var result = await _taskService.GetTaskByIdAsync(id, userId, isAdmin);
+            if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Result<TaskDto>>> CreateTask([FromBody] CreateTaskRequest request)
+        [EndpointSummary("Создать новую задачу")]
+        [EndpointDescription("Создаёт задачу и связывает её с проектом.")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Response<TaskDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<TaskDto>>> CreateTask([FromBody] CreateTaskRequest request)
         {
-            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Парсим string в Guid для метода CreateTaskAsync
-            if (!Guid.TryParse(userIdStr, out var userId))
-                return Unauthorized();
-
-    var result = await _taskService.CreateTaskAsync(request, userId);
+            var userId = GetUserId();
+            if (userId == Guid.Empty) return Unauthorized();
+            var result = await _taskService.CreateTaskAsync(request, userId);
+            if (!result.IsSuccess) return BadRequest(result);
             return CreatedAtAction(nameof(GetTask), new { id = result.Data?.Id }, result);
-}
+        }
 
-[HttpPut("{id:guid}/status")]
-public async Task<ActionResult<Result<bool>>> UpdateTaskStatus(Guid id, [FromBody] UpdateTaskStatusRequest request)
-{
-    var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            Guid? userId = Guid.TryParse(userIdStr, out var parsedGuid) ? parsedGuid : null;
-    var isAdmin = User.IsInRole("Admin");
-
-            var result = await _taskService.UpdateTaskStatusAsync(id, request.Status, userId, isAdmin);
-            if (!result.IsSuccess)
-                return NotFound(result);
-
+        [HttpPut("{id:guid}/status")]
+        [EndpointSummary("Изменить статус задачи")]
+        [EndpointDescription("Обновляет статус задачи. Доступно владельцу, исполнителю или администратору.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<bool>>> UpdateTaskStatus(Guid id, [FromBody] UpdateTaskStatusRequest request)
+        {
+            var userId = GetUserId();
+            var isAdmin = User.IsInRole("Admin");
+            var result = await _taskService.UpdateTaskStatusAsync(id, request.Status, userId == Guid.Empty ? null : userId, isAdmin);
+            if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
 
-[HttpDelete("{id:guid}")]
-public async Task<ActionResult<Result<bool>>> DeleteTask(Guid id)
-{
-    var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Парсим string в Guid для будущего метода удаления
-            if (!Guid.TryParse(userIdStr, out var userId))
-        return Unauthorized();
-
-    var isAdmin = User.IsInRole("Admin");
-            
-            // Вызываем асинхронный метод (убедитесь, что он добавлен в ITaskService и TaskService.cs)[cite: 5]
+        [HttpDelete("{id:guid}")]
+        [EndpointSummary("Удалить задачу")]
+        [EndpointDescription("Удаляет задачу. Доступно автору, владельцу проекта или администратору.")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response<bool>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Response<bool>>> DeleteTask(Guid id)
+        {
+            var userId = GetUserId();
+            if (userId == Guid.Empty) return Unauthorized();
+            var isAdmin = User.IsInRole("Admin");
             var result = await _taskService.DeleteTaskAsync(id, userId, isAdmin);
-            if (!result.IsSuccess)
-                return NotFound(result);
-
+            if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
     }

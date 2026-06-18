@@ -1,7 +1,5 @@
 ﻿using Runord.Client.Views.Windows;
-using System;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -26,18 +24,21 @@ namespace Runord.Client
         public void ShowLoading()
         {
             ResizeMode = ResizeMode.NoResize;
+            WindowStyle = WindowStyle.None;
             MainContentHolder.Margin = new Thickness(0);
             SwitchView(new LoadingView());
         }
 
         public void ShowLogin()
         {
+            WindowStyle = WindowStyle.SingleBorderWindow;
             SetNormalWindowLayout();
             SwitchView(new LoginView());
         }
 
         public void ShowMain()
         {
+            WindowStyle = WindowStyle.SingleBorderWindow;
             SetNormalWindowLayout();
             SwitchView(new MainView());
         }

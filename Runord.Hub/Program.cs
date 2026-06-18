@@ -28,12 +28,12 @@ var app = builder.Build();
 // Настройка HTTP-конвейера
 if (app.Environment.IsDevelopment())
 {
-    // Наш исправленный метод сам вызовет внутри и MapOpenApi(), и MapScalarApiReference()
     app.UseApiDocumentationUi();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); // Корректное расположение CORS
+app.UseStaticFiles();
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

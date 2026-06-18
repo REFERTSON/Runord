@@ -1,4 +1,4 @@
-﻿using Runord.Shared.DTOs.Task;
+﻿using Runord.Shared.Entities;
 
 namespace Runord.Hub.Services.Interfaces
 {
